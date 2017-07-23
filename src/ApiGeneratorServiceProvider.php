@@ -1,10 +1,10 @@
 <?php
 
-namespace Khalyomede\LaravelApiGenerator;
+namespace Khalyomede\ApiGenerator;
 
 use Illuminate\Support\ServiceProvider;
 
-class LaravelApiGeneratorServiceProvider extends ServiceProvider
+class ApiGeneratorServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Khalyomede\LaravelApiGenerator;
+namespace Khalyomede\ApiGenerator;
 
 use Illuminate\Console\Command;
 
