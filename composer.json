@@ -1,0 +1,8 @@
+{
+    "name": "khalyomede/laravel-api-generator",
+    "description": "Generates models, controllers and eventually routes API from a database",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "require": {}
+}
