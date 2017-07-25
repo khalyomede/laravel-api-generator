@@ -35,7 +35,7 @@ http://localhost:8000/api/user
 - Scans your database and creates the models, controllers, and routes according to your tables properties
 
 ## Next features
-- Provide a neat JSON response for your API
+- Provides a neat JSON response for your API
 - Always returns a JSON response, no matter it is a success or a database outage, ...
 - Log everything, including fatal errors and exceptions
 - Creates your relationships according to your tables foreign keys
