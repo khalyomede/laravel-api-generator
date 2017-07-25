@@ -48,6 +48,7 @@ class ApiGeneratorCommand extends Command
         foreach( $tables as $this->table ) {
             $this->createModel();
             $this->createController();
+            $this->createRoutes();
         }
     }
 
@@ -82,20 +83,11 @@ class ApiGeneratorCommand extends Command
     }
 
     /**
-     * @param string $path
-     * @return bool
-     */
-    private static function unavailable_file( $path ) {
-        return file_exists( $path ) && ! is_writable( $path );
-    }
-
-    /**
      * @return void
      */
     private function createModel() {
         $this->deleteModel();
 
-        $columns = $this->columns();
         $name = $this->modelName();
 
         $this->call("make:model", ['name' => $name]);
@@ -103,8 +95,9 @@ class ApiGeneratorCommand extends Command
         /**
          * @todo change $this->createModelProperty to be able to call following methods in any order (currently bug)
          */
-        $this->createModelProperty('protected', 'table', $this->table);        
-        $this->createModelProperty('protected', 'fillable', $columns);
+        $this->createModelProperty('protected', 'table', $this->table);  
+        $this->createModelProperty('public', 'timestamps', 'false');      
+        $this->createModelProperty('protected', 'guarded', []);
     }
 
     /**
@@ -139,6 +132,12 @@ class ApiGeneratorCommand extends Command
         else if ( is_numeric($value) ) {
             
         }
+        else if( $value == 'false' || $value == 'true' ) {
+            $code[ $this->nextModelRowIndex ] = "\t$scope " . '$' . "$name = $value;";
+            
+            array_splice( $code, $this->nextModelRowIndex, 0, '' );
+            array_splice( $code, $this->nextModelRowIndex, 0, '' );
+        }
         else {
             $code[ $this->nextModelRowIndex ] = "\t$scope " . '$' . "$name = '$value';";
             
@@ -157,20 +156,28 @@ class ApiGeneratorCommand extends Command
         return ucfirst( $this->table );
     }
 
-    /**
-     * @return string[]
-     */
-    private function columns() {
-        return DB::getSchemaBuilder()->getColumnListing( $this->table );
-    }
-
     private function createController() {
         $this->deleteController();
+
+        $modelName = $this->modelName();
+
         $this->call('make:controller', [
             '--resource' => true,
-            'name' => $this->controllerName(),
-            '--model' => $this->modelName()
+            'name' => $this->controllerName()
         ]);
+
+        $name = $this->tableName();
+
+        $code = $this->getControllerCodeToArray();
+        $code[16 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::all();';
+        $code[37 - 1] = "\t\t" . 'return redirect(' . "'/api/$name/' . " . '\\App\\' . $modelName . '::create( $request->all() )->id );';
+        $code[48 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );';
+
+        file_put_contents( $this->controllerPath(), implode( $code, "\n" ) );
+    }
+
+    private function getControllerCodeToArray() {
+        return explode("\n", file_get_contents( $this->controllerPath() ));
     }
 
     private function deleteController() {
@@ -188,12 +195,46 @@ class ApiGeneratorCommand extends Command
     }
 
     private static function deleteFile( $path ) {
-        if( self::unavailable_file( $path ) ) {
-            throw new Exception("the command process stoped because the file $path is already opened in another program and cannot be removed");
-        }
-
         if( file_exists( $path ) ) {
             unlink( $path );    
         }
+    }
+
+    private function routesName() {
+        return 'api';
+    }
+
+    private function routesPath() {
+        return base_path('routes/' . $this->routesName() . '.php' );
+    }
+
+    private function getRouteCodeToArray() {
+        return explode("\n", file_get_contents( $this->routesPath() ) );
+    }
+
+    private function tableName() {
+        return strtolower($this->table);
+    }
+
+    private function createRoutes() {
+        $code = $this->getRouteCodeToArray();
+
+        $lastLine = count($code) - 1;
+
+        $name = $this->tableName();
+        $controllerName = $this->controllerName();
+
+        array_splice( $code, $lastLine + 0, 0, '' );
+        array_splice( $code, $lastLine + 1, 0, "Route::get('/$name', '" . $controllerName . "@index');" );
+        array_splice( $code, $lastLine + 2, 0, "Route::get('/$name/{id}', '" . $controllerName . "@show');" );
+        array_splice( $code, $lastLine + 3, 0, "Route::post('/$name', '" . $controllerName . "@store');" );
+        array_splice( $code, $lastLine + 4, 0, "Route::put('/$name/{id}', '" . $controllerName . "@update');" );
+        array_splice( $code, $lastLine + 5, 0, "Route::delete('/$name/{id}', '" . $controllerName . "@destroy');" );
+
+        $routesPath = $this->routesPath();
+
+        file_put_contents( $routesPath, implode( $code, "\n" ) );
+
+        // echo "Routes created successfully." . PHP_EOL;
     }
 }
