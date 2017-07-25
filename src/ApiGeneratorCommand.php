@@ -43,15 +43,31 @@ class ApiGeneratorCommand extends Command
      */
     public function handle()
     {
-        $tables = $this->tables();
+        $tables = [];
 
-        $whiteList = $this->getOption('table');
+        /**
+         * White list
+         */
+        if( $this->hasTheOption('table') ) {
+            $tables = $this->getOption('table');
+        }
+        else {
+            $tables = $this->tables();    
+        }
 
         foreach( $tables as $this->table ) {
-            $this->createModel();
-            $this->createController();
-            $this->createRoutes();
+            $this->buildApi();
         }
+    }
+
+    private function hasTheOption( $key ) {
+        return ! is_null( $this->option( $key ) );
+    }
+
+    private function buildApi() {
+        $this->createModel();
+        $this->createController();
+        $this->createRoutes();
     }
 
     public function getOption( $key ) {
