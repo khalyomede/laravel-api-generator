@@ -113,4 +113,4 @@ Each time your run this command, at least 3 files are created :
 - a resource route : located at `/routes/api.php`. Instead of creating 5 routes (index, show, store, update, destroy), we use Laravel Resource Controller to bind all these routes into one single call of `Route::resource()`. This make the file more readable, but you should know it if you would like to tweak the end result. 
 
 ## Why should I use it
-The main advantage is to make an API quickly. The ultimate goal is to let you focus on things that have a value, like user interfaces and innovations, things that for the record cannot be automatized (at least not now !).
+The main advantage is to make an API quickly. The ultimate goal is to let you focus on things that have a value, like user interfaces and innovations.
