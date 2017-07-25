@@ -101,6 +101,7 @@ Available commands:
 php artisan api:generate
 ```
 *Result :* this will create, for each tables in your database, a corresponding model, controller, and routes.
+
 [back to the example list](#list-of-examples)
 
 ## How it works
