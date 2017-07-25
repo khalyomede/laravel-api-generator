@@ -46,8 +46,8 @@ class ApiGeneratorCommand extends Command
         $tables = $this->tables();
 
         foreach( $tables as $this->table ) {
-            $this->deleteModel();
             $this->createModel();
+            $this->createController();
         }
     }
 
@@ -72,16 +72,9 @@ class ApiGeneratorCommand extends Command
      * @throws Exception
      */
     private function deleteModel() {
-        $table = $this->table;
         $path = $this->modelPath();
 
-        if( self::unavailable_file( $path ) ) {
-            throw new Exception("the command process stoped because the file $path is already opened in another program and cannot be removed");
-        }
-
-        if( file_exists( $path ) ) {
-            unlink( $path );    
-        }
+        self::deleteFile( $path );
     }
 
     private function modelPath() {
@@ -100,6 +93,8 @@ class ApiGeneratorCommand extends Command
      * @return void
      */
     private function createModel() {
+        $this->deleteModel();
+
         $columns = $this->columns();
         $name = $this->modelName();
 
@@ -124,7 +119,7 @@ class ApiGeneratorCommand extends Command
         $code = $this->getModelCodeToArray();
 
         if( is_array($value) ) {
-            $code[ $this->nextModelRowIndex ] = "\t$scope $name = [";
+            $code[ $this->nextModelRowIndex ] = "\t$scope " . '$' . "$name = [";
             $valueCount = count($value);
 
             $index = 0;
@@ -145,7 +140,7 @@ class ApiGeneratorCommand extends Command
             
         }
         else {
-            $code[ $this->nextModelRowIndex ] = "\t$scope $name = '$value';";
+            $code[ $this->nextModelRowIndex ] = "\t$scope " . '$' . "$name = '$value';";
             
             array_splice( $code, $this->nextModelRowIndex, 0, '' );
             array_splice( $code, $this->nextModelRowIndex, 0, '' );
@@ -167,5 +162,38 @@ class ApiGeneratorCommand extends Command
      */
     private function columns() {
         return DB::getSchemaBuilder()->getColumnListing( $this->table );
+    }
+
+    private function createController() {
+        $this->deleteController();
+        $this->call('make:controller', [
+            '--resource' => true,
+            'name' => $this->controllerName(),
+            '--model' => $this->modelName()
+        ]);
+    }
+
+    private function deleteController() {
+        $path = $this->controllerPath();
+
+        self::deleteFile( $path );
+    }
+
+    private function controllerName() {
+        return $this->modelName() . 'Controller';
+    }
+
+    private function controllerPath() {
+        return app_path('Http/Controllers/' . $this->controllerName() . '.php');
+    }
+
+    private static function deleteFile( $path ) {
+        if( self::unavailable_file( $path ) ) {
+            throw new Exception("the command process stoped because the file $path is already opened in another program and cannot be removed");
+        }
+
+        if( file_exists( $path ) ) {
+            unlink( $path );    
+        }
     }
 }
