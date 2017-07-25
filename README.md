@@ -97,6 +97,8 @@ php artisan api:generate
 *Result :* this will create, for each tables in your database, a corresponding model, controller, and routes.
 
 ## How it works
+This command will scan your `/.env` file. Make sure it exists and that your database credentials are correct.
+
 Each time your run this command, at least 3 files are created :
 - a model : located at `/app/<name>.php`, it represents the related table. It always begins with an uppercase.
 - a controller : located at `/app/Http/Controllers/<name>Controller.php`, it is always the name of the model followed by "Controller"
