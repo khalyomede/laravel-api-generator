@@ -14,7 +14,7 @@ class ApiGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'api:generate';
+    protected $signature = 'api:generate {--table=}';
 
     /**
      * The console command description.
@@ -45,11 +45,17 @@ class ApiGeneratorCommand extends Command
     {
         $tables = $this->tables();
 
+        $whiteList = $this->getOption('table');
+
         foreach( $tables as $this->table ) {
             $this->createModel();
             $this->createController();
             $this->createRoutes();
         }
+    }
+
+    public function getOption( $key ) {
+        return explode( ',', (string) $this->option( $key ) );
     }
 
     /**
