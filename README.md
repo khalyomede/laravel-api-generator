@@ -114,6 +114,9 @@ php artisan api:generate --table=user,post
 *Result :* this will create the model, controller and routes only for the table `user` and `post` in this case.
 
 [back to the example list](#list-of-examples)
+
+## Help documentation
+At anytime you can run `php artisan help api:generate` to get a complete list of all the option you can use, and their related description. This will always be the equivalent of this documentation. This command can also be used with any of the PHP artisan commands.
 ## How it works
 This command will scan your `/.env` file. Make sure it exists and that your database credentials are correct.
 
