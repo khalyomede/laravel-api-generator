@@ -45,6 +45,9 @@ http://localhost:8000/api/user
 - Can fill your tables if you need some fake data
 - Can blacklist columns of tables to improve security
 
+## Pre-requisites
+You need to have an existing [Laravel](https://laravel.com/) **5.3+** project to be able to use this library.
+
 ## Installation
 Open a prompt command in your project folder root and run :
 ```bash
