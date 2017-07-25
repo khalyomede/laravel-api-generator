@@ -14,7 +14,7 @@ class ApiGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'api:generate {--table=}';
+    protected $signature = 'api:generate {--table= : Comma separated list of table you ONLY want to expose}';
 
     /**
      * The console command description.
