@@ -49,6 +49,8 @@ class ApiGeneratorCommand extends Command
             $this->createModel();
             $this->createController();
             $this->createRoutes();
+
+
         }
     }
 
@@ -129,10 +131,7 @@ class ApiGeneratorCommand extends Command
 
             array_splice( $code, $this->nextModelRowIndex + 1 + $index + 1, 0, "\t];");
         }
-        else if ( is_numeric($value) ) {
-            
-        }
-        else if( $value == 'false' || $value == 'true' ) {
+        else if( is_numeric($value) || $value == 'false' || $value == 'true' ) {
             $code[ $this->nextModelRowIndex ] = "\t$scope " . '$' . "$name = $value;";
             
             array_splice( $code, $this->nextModelRowIndex, 0, '' );
@@ -169,9 +168,50 @@ class ApiGeneratorCommand extends Command
         $name = $this->tableName();
 
         $code = $this->getControllerCodeToArray();
+        
+        /**
+         * index
+         */
         $code[16 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::all();';
-        $code[37 - 1] = "\t\t" . 'return redirect(' . "'/api/$name/' . " . '\\App\\' . $modelName . '::create( $request->all() )->id );';
+        
+        /**
+         * store
+         */
+        $code[37 - 1] = "\t\t" . "return \\App\\$modelName" . "::findOrFail( \\App\\$modelName" . '::create( $request->all() )->id );';
+        
+        /**
+         * show
+         */
         $code[48 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );';
+
+        /**
+         * update
+         */
+        $code[71 - 1] = "\t\t" . '$' . $name . ' = \\App\\' . $modelName .  '::findOrFail( $id );';
+        array_splice( $code, 71 + 0, 0, "\t\t" . '' );
+        array_splice( $code, 71 + 1, 0, "\t\t" . 'foreach( $request->input() as $key => $value ) {' );
+        array_splice( $code, 71 + 2, 0, "\t\t\t" . '$' . $name . '->{ $key } = $value;' );
+        array_splice( $code, 71 + 3, 0, "\t\t" . '}' );
+        array_splice( $code, 71 + 4, 0, "\t\t" . '' );
+        array_splice( $code, 71 + 5, 0, "\t\t" . '$' . $name . '->save();' );
+        array_splice( $code, 71 + 6, 0, "\t\t" . '' );
+        array_splice( $code, 71 + 7, 0, "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );' );
+
+        /**
+         * delete
+         */
+        /*
+            $country = \App\Country::findOrFail( $id );
+
+        $country->delete();
+
+        return $country;
+        */
+        $code[90 - 1] = "\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );';
+        array_splice( $code, 90 + 0, 0, "\t\t" . '' );
+        array_splice( $code, 90 + 1, 0, "\t\t" . '$' . $name . '->delete();' );
+        array_splice( $code, 90 + 2, 0, "\t\t" . '' );
+        array_splice( $code, 90 + 3, 0, "\t\t" . 'return $' . $name . ';' );
 
         file_put_contents( $this->controllerPath(), implode( $code, "\n" ) );
     }
@@ -235,6 +275,6 @@ class ApiGeneratorCommand extends Command
 
         file_put_contents( $routesPath, implode( $code, "\n" ) );
 
-        // echo "Routes created successfully." . PHP_EOL;
+        echo "Routes created successfully." . PHP_EOL;
     }
 }
