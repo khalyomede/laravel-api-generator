@@ -36,7 +36,8 @@ http://localhost:8000/api/user
 - Creates fields `protected $table` and `protected $fillable` to get ready to insert data
 
 ## Next features
-- Provide a neat JSON response for your API using JSun format ([https://github.com/khalyomede/jsun-php](https://github.com/khalyomede/jsun-php))
-- Return always a JSON response, even if there was an error (database down, malformed query, ...)
+- Provide a neat JSON response for your API
+- Always returns a JSON response, no matter it is a success or a database outage, ...
 - Log everything, including fatal errors and exceptions
 - Creates your relationships according to your tables foreign keys
+- Can fill your tables if you need some fake data
