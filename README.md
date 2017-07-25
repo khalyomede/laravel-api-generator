@@ -33,9 +33,9 @@ http://localhost:8000/api/user
 
 ## Features
 - Scans your database and creates the models, controllers, and routes according to your tables properties
+- Can scope the tables you only need to expose to your API
 
 ## Next features
-- Can scope the tables you need
 - Can blacklist tables you dont like
 - Can remove a prefix to each of your tables
 - Provides a neat JSON response for your API
@@ -92,18 +92,27 @@ Available commands:
 ## Limitations
 - For now, if you try to run another time the command, this will not override previous routes but instead this will add again all the necessary routes. This has no impact in the final usage, but this can make the file `/routes/api.php` a little bit overwhelmed if you run it several times.
 - The code of each models is not as clear as it should be. An effort should be made to re-order the variables.
+- Currently there is no checking if you specify table that does not exists in filters option like `--table`. They will be "available" but will throw a fatal exception because the related table does not exists. Futures update will check the existence of the table prior its processing.
 
 ## List of examples
 - [Example of usage 1 : basic usage](#example-of-usage-1--basic-usage)
 
 ## Example of usage 1 : basic usage
+This is the simplest example that scan your database to get all the table name and work from this array.
 ```bash
 php artisan api:generate
 ```
 *Result :* this will create, for each tables in your database, a corresponding model, controller, and routes.
 
 [back to the example list](#list-of-examples)
+## Example of usage 2 : white-listing your prefered tables
+This will only try build the API for the filtered tables. Note that is a white-list, so only the specifyied table will be exposed to the API. *put link to black-list argument here*
+```bash
+php artisan api:generate --table=user,post
+```
+*Result :* this will create the model, controller and routes only for the table `user` and `post` in this case.
 
+[back to the example list](#list-of-examples)
 ## How it works
 This command will scan your `/.env` file. Make sure it exists and that your database credentials are correct.
 
