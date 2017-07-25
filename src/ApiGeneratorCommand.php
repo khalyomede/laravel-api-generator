@@ -49,8 +49,6 @@ class ApiGeneratorCommand extends Command
             $this->createModel();
             $this->createController();
             $this->createRoutes();
-
-
         }
     }
 
@@ -265,16 +263,12 @@ class ApiGeneratorCommand extends Command
         $controllerName = $this->controllerName();
 
         array_splice( $code, $lastLine + 0, 0, '' );
-        array_splice( $code, $lastLine + 1, 0, "Route::get('/$name', '" . $controllerName . "@index');" );
-        array_splice( $code, $lastLine + 2, 0, "Route::get('/$name/{id}', '" . $controllerName . "@show');" );
-        array_splice( $code, $lastLine + 3, 0, "Route::post('/$name', '" . $controllerName . "@store');" );
-        array_splice( $code, $lastLine + 4, 0, "Route::put('/$name/{id}', '" . $controllerName . "@update');" );
-        array_splice( $code, $lastLine + 5, 0, "Route::delete('/$name/{id}', '" . $controllerName . "@destroy');" );
+        array_splice( $code, $lastLine + 1, 0, "Route::resource('/$name', '" . $controllerName . "');" );
 
         $routesPath = $this->routesPath();
 
         file_put_contents( $routesPath, implode( $code, "\n" ) );
 
-        echo "Routes created successfully." . PHP_EOL;
+        echo "Ressource created successfully." . PHP_EOL;
     }
 }
