@@ -33,7 +33,6 @@ http://localhost:8000/api/user
 
 ## Features
 - Scans your database and creates the models, controllers, and routes according to your tables properties
-- Creates fields `protected $table` and `protected $fillable` to get ready to insert data
 
 ## Next features
 - Provide a neat JSON response for your API
@@ -41,3 +40,4 @@ http://localhost:8000/api/user
 - Log everything, including fatal errors and exceptions
 - Creates your relationships according to your tables foreign keys
 - Can fill your tables if you need some fake data
+- Can blacklist columns of tables to improve security
