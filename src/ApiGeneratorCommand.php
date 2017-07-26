@@ -15,7 +15,7 @@ class ApiGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'api:generate {--table=} {--noTable=} {--suffix=} {--noCol=}';
+    protected $signature = 'api:generate {--table=} {--noTable=} {--suffix=} {--noCol=} {--fake=}';
 
     /**
      * The console command description.
