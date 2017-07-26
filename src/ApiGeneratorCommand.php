@@ -24,6 +24,7 @@ class ApiGeneratorCommand extends Command
     protected $description = 'Generate models, controllers and API routes from a database.';
 
     protected $table;
+    protected $tables;
     protected $nextModelRowIndex;
 
     /**
@@ -44,18 +45,18 @@ class ApiGeneratorCommand extends Command
     public function handle()
     {
         $tables = [];
-
+        
         /**
          * White list
          */
         if( $this->hasTheOption('table') ) {
-            $tables = $this->getOption('table');
+            $this->tables = $this->getOption('table');
         }
         else {
-            $tables = $this->tables();    
+            $this->tables = $this->tables();    
         }
 
-        foreach( $tables as $this->table ) {
+        foreach( $this->tables as $this->table ) {
             $this->buildApi();
         }
     }
