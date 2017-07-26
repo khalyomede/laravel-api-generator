@@ -109,7 +109,14 @@ php artisan api:generate --table=user,post
 *Result :* this will create the model, controller and routes only for the table `user` and `post` in this case.
 
 [back to the example list](#list-of-examples)
+## Example of usage 3 : black listing the tables you dont want to expose
+This will remove the tables you specify from your full table list, thus preventing those to be exposed.
+```bash
+php artisan api:generate --noTable=user,post
+```
+If the full table list contains `user`, `post`, `address`, and `country`, only the tables `address` and `country` will be exposed.
 
+[back to the example list](#list-of-examples)
 ## Help documentation
 At anytime you can run `php artisan help api:generate` to get a complete list of all the option you can use, and their related description. This will always be the equivalent of this documentation. This command can also be used with any of the PHP artisan commands.
 ## How it works
