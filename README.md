@@ -103,7 +103,7 @@ php artisan api:generate
 
 [back to the example list](#list-of-examples)
 ## Example of usage 2 : white-listing your prefered tables
-This will only try build the API for the filtered tables. Note that is a white-list, so only the specifyied table will be exposed to the API. *put link to black-list argument here*
+This will only try build the API for the filtered tables. Note that it is a white-list, so only the specifyied table will be exposed to the API.
 ```bash
 php artisan api:generate --table=user,post
 ```
@@ -115,7 +115,7 @@ This will remove the tables you specify from your full table list, thus preventi
 ```bash
 php artisan api:generate --noTable=user,post
 ```
-If the full table list contains `user`, `post`, `address`, and `country`, only the tables `address` and `country` will be exposed.
+If the full table list contains `user`, `post`, `address`, and `country`, only the tables `address` and `country` will be exposed. **Note :** if you specifyied `--table` white-list, `--noTable` will simply be ignored.
 
 [back to the example list](#list-of-examples)
 ## Help documentation
