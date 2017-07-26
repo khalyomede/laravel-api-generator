@@ -15,7 +15,7 @@ class ApiGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'api:generate {--table= : Comma separated list of table you ONLY want to expose} {--noTable= : Comma separated list of table you DONT WANT to expose. Each table that is not in this list will be exposed. If you specify --table option, this option will be ignored.}';
+    protected $signature = 'api:generate {--table= : Comma separated list of table you ONLY want to expose} {--noTable= : Comma separated list of table you DONT WANT to expose. Each table that is not in this list will be exposed. If you specify --table option, this option will be ignored.} {--suffix= : Specify a string that you want to delete for the routes and models name (this can be useful if you use a third-party CMS like wordpress which put a suffix like wordpress_*).}';
 
     /**
      * The console command description.
@@ -95,8 +95,12 @@ class ApiGeneratorCommand extends Command
         $this->createRoutes();
     }
 
-    public function getOption( $key ) {
+    private function getOption( $key ) {
         return explode( ',', (string) $this->option( $key ) );
+    }
+
+    private function getFirstOption( $key ) {
+        return isset($this->getOption( $key )[0]) ? $this->getOption( $key )[0] : '';
     }
 
     /**
@@ -197,7 +201,7 @@ class ApiGeneratorCommand extends Command
     }
 
     private function modelName() {
-        return ucfirst( $this->table );
+        return $this->hasOption('suffix') ? ucfirst( preg_replace( "/^\b" . $this->getFirstOption('suffix') . "/i", '', $this->table ) ) : ucfirst( $this->table );
     }
 
     private function createController() {
@@ -301,12 +305,16 @@ class ApiGeneratorCommand extends Command
         return strtolower($this->table);
     }
 
+    private function routeName() {
+        return strtolower( $this->modelName() );
+    }
+
     private function createRoutes() {
         $code = $this->getRouteCodeToArray();
 
         $lastLine = count($code) - 1;
 
-        $name = $this->tableName();
+        $name = $this->routeName();
         $controllerName = $this->controllerName();
 
         array_splice( $code, $lastLine + 0, 0, '' );
