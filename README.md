@@ -35,9 +35,9 @@ http://localhost:8000/api/user
 - Scans your database and creates the models, controllers, and routes according to your tables properties
 - Can scope the tables you only need to expose to your API
 - Can blacklist tables you dont like
+- Can remove a prefix to each of your tables
 
 ## Next features
-- Can remove a prefix to each of your tables
 - Provides a neat JSON response for your API
 - Always returns a JSON response, no matter it is a success or a database outage, ...
 - Log everything, including fatal errors and exceptions
@@ -116,6 +116,16 @@ This will remove the tables you specify from your full table list, thus preventi
 php artisan api:generate --noTable=user,post
 ```
 If the full table list contains `user`, `post`, `address`, and `country`, only the tables `address` and `country` will be exposed. **Note :** if you specifyied `--table` white-list, `--noTable` will simply be ignored.
+
+[back to the example list](#list-of-examples)
+## Example of usage 4 : removing a suffix for each of the table exposed
+This removes, from all table name, the word specifyied at the begining of your tables names. This can be useful if for example you are using a third-party system like Wordpress that will add some prefix to your table, but you prefer to keep it readable when asking your API some resources. 
+```bash
+php artisan api:generate --suffix=wp_
+```
+*Result :* this will removing the word at the begining of each tables, so each of the related models, controllers, and routes will be cleaned in consequence.
+
+**Note :** If your tables do not begins with the word, this will have no effects on the route name.
 
 [back to the example list](#list-of-examples)
 ## Help documentation
