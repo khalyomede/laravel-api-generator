@@ -15,7 +15,7 @@ class ApiGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'api:generate {--table= : Comma separated list of table you ONLY want to expose} {--noTable= : Comma separated list of table you DONT WANT to expose. Each table that is not in this list will be exposed. If you specify --table option, this option will be ignored.} {--suffix= : Specify a string that you want to delete for the routes and models name (this can be useful if you use a third-party CMS like wordpress which put a suffix like wordpress_*).}';
+    protected $signature = 'api:generate {--table=} {--noTable=} {--suffix=} {--noCol=}';
 
     /**
      * The console command description.
@@ -148,7 +148,29 @@ class ApiGeneratorCommand extends Command
          */
         $this->createModelProperty('protected', 'table', $this->table);  
         $this->createModelProperty('public', 'timestamps', 'false');      
+        $this->createModelProperty('protected', 'hidden', $this->columnsBlackList());
         $this->createModelProperty('protected', 'guarded', []);
+    }
+
+    private function columnsBlackList() {
+        $guarded = [];
+
+        if( $this->hasTheOption('noCol') ) {
+            $bulkColumns = $this->getOption('noCol');
+
+            foreach( $bulkColumns as $bulkColumn ) {
+                list( $table, $column ) = explode('.', $bulkColumn);
+
+                if( $this->table === $table ) {
+                    $guarded[] = $column;
+                }
+            }
+        }  
+        else {
+            // nothing to do, $guarded is already empty
+        }
+
+        return $guarded;
     }
 
     /**
@@ -163,7 +185,10 @@ class ApiGeneratorCommand extends Command
         $code = $this->getModelCodeToArray();
 
         if( is_array($value) ) {
-            $code[ $this->nextModelRowIndex ] = "\t$scope " . '$' . "$name = [";
+            array_splice($code, $this->nextModelRowIndex, 0, "\t$scope " . '$' . "$name = [");
+
+            $this->nextModelRowIndex++;
+
             $valueCount = count($value);
 
             $index = 0;
@@ -175,21 +200,39 @@ class ApiGeneratorCommand extends Command
                     $string .= ',';
                 }
 
-                array_splice( $code, $this->nextModelRowIndex + $index + 1, 0, $string );
+                array_splice( $code, $this->nextModelRowIndex, 0, $string );
+
+                $this->nextModelRowIndex++;
             }
 
-            array_splice( $code, $this->nextModelRowIndex + 1 + $index + 1, 0, "\t];");
+            array_splice( $code, $this->nextModelRowIndex, 0, "\t];");
+
+            $this->nextModelRowIndex++;
+
+            array_splice( $code, $this->nextModelRowIndex, 0, "\t" . '' );
+
+            $this->nextModelRowIndex++;
         }
         else if( is_numeric($value) || $value == 'false' || $value == 'true' ) {
-            $code[ $this->nextModelRowIndex ] = "\t$scope " . '$' . "$name = $value;";
+            array_splice( $code, $this->nextModelRowIndex, 0, "\t$scope " . '$' . "$name = $value;");
+
+            $this->nextModelRowIndex++;
             
             array_splice( $code, $this->nextModelRowIndex, 0, '' );
+
+            $this->nextModelRowIndex++;
+
             array_splice( $code, $this->nextModelRowIndex, 0, '' );
         }
         else {
             $code[ $this->nextModelRowIndex ] = "\t$scope " . '$' . "$name = '$value';";
+
+            $this->nextModelRowIndex++;
             
             array_splice( $code, $this->nextModelRowIndex, 0, '' );
+
+            $this->nextModelRowIndex++;
+
             array_splice( $code, $this->nextModelRowIndex, 0, '' );
         }
 
@@ -201,7 +244,7 @@ class ApiGeneratorCommand extends Command
     }
 
     private function modelName() {
-        return $this->hasOption('suffix') ? ucfirst( preg_replace( "/^\b" . $this->getFirstOption('suffix') . "/i", '', $this->table ) ) : ucfirst( $this->table );
+        return $this->hasTheOption('suffix') ? ucfirst( preg_replace( "/^\b" . $this->getFirstOption('suffix') . "/i", '', $this->table ) ) : ucfirst( $this->table );
     }
 
     private function createController() {
