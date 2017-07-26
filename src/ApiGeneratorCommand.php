@@ -3,6 +3,7 @@
 namespace Khalyomede\ApiGenerator;
 
 use Illuminate\Console\Command;
+use Faker\Factory as Faker;
 use Exception;
 use DB;
 
@@ -86,7 +87,15 @@ class ApiGeneratorCommand extends Command
     }
 
     private function columns() {
-        return DB::getSchemaBuilder()->getColumnListing( $this->table );
+        $columns = [];
+
+        $bulkColumns = DB::connection()->getDoctrineSchemaManager()->listTableColumns( $this->table );
+
+        foreach( $bulkColumns as $bulkColumn ) {
+            $columns[ $bulkColumn->getName() ] = $bulkColumn->getType()->getName();
+        }
+
+        return $columns;
     }
 
     private function tableBlackList() {
@@ -111,6 +120,54 @@ class ApiGeneratorCommand extends Command
         $this->createModel();
         $this->createController();
         $this->createRoutes();
+
+        if( $this->hasTheOption('fake') ) {
+            $faker = Faker::create();
+
+            $count = $this->getfirstOption('fake');
+
+            $columns = $this->columns();
+
+            $primaryKey = $this->primaryKey();
+
+            $fakes = [];
+
+            for( $i = 0; $i < $count; $i++ ) {
+                foreach( $columns as $column => $type ) {
+                    if( $column != $primaryKey ) {
+                        /**
+                         * @see http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html
+                         * @see https://github.com/fzaninotto/Faker
+                         */
+                        if( in_array($type, ['smallint', 'integer', 'bigint']) ) {
+                            $fakes[ $i ][ $column ] = $faker->randomNumber();
+                        }
+                        else if( in_array($type, ['decimal', 'float']) ) {
+                            $fakes[ $i ][ $column ] = $faker->randomFloat();   
+                        }
+                        else if( in_array($type, ['text', 'string', 'guid']) ) {
+                            $fakes[ $i ][ $column ] = $faker->paragraph(1);
+                        }
+                        else if( $type === 'boolean' ) {
+                            $fakes[ $i ][ $column ] = $faker->boolean();
+                        }
+                        else if( in_array($type, 'date', 'date_immutable']) ) {
+                            $fakes[ $i ][ $column ] = $faker->date();   
+                        }
+                        else if( in_array($type, ['datetime', 'datetime_immutable']) ) {
+                            $fakes[ $i ][ $column ] = $faker->date('Y-m-d H:i:s');
+                        }
+                        else if( in_array($type, ['time', 'time_immutable']) ) {
+                            $fakes[ $i ][ $column ] = $faker->time();   
+                        }
+                    }                    
+                }
+            }
+
+            $instance = '\App\\' . $this->modelName();
+
+            $instance::insert($fakes);
+        }
     }
 
     private function getOption( $key ) {
