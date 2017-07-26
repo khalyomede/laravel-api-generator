@@ -32,7 +32,7 @@ http://localhost:8000/api/user
 ```
 
 ## Create your own Laravel Services Providers
-This library has been made possible with the help of Services Providers. Laravel ships with an interesting bundle system to ensure every comunity package introduce themselves well to an existing Laravel project. I strongly encourage to check one of the best tutorials out there made [by our friends at DevDojo](https://devdojo.com/blog/tutorials/how-to-create-a-laravel-package).
+This library has been made possible with the help of Services Providers. Laravel ships with an interesting bundle system to ensure every comunity package introduce themselves well to an existing Laravel project. I strongly encourage to check one of the best tutorials out there made [by our friends at DevDojo](https://devdojo.com/blog/tutorials/how-to-create-a-laravel-package) if you do not know how to get started and create your own laravel packages.
 
 ## Features
 - Scans your database and creates the models, controllers, and routes according to your tables properties *>= **0.0.1***
