@@ -3,6 +3,7 @@
 namespace Khalyomede\ApiGenerator;
 
 use Illuminate\Console\Command;
+use Exception;
 use DB;
 
 class ApiGeneratorCommand extends Command
@@ -45,7 +46,7 @@ class ApiGeneratorCommand extends Command
     public function handle()
     {
         $tables = [];
-        
+
         /**
          * White list
          */
@@ -56,8 +57,20 @@ class ApiGeneratorCommand extends Command
             $this->tables = $this->tables();    
         }
 
+        $this->checkIfTablesExist();
+
         foreach( $this->tables as $this->table ) {
             $this->buildApi();
+        }
+    }
+
+    private function checkIfTablesExist() {
+        $schema = DB::getSchemaBuilder();
+
+        foreach( $this->tables as $table ) {
+            if( ! $schema->hasTable( $table ) ) {
+                throw new Exception("\"$table\" does not exists in your database \"" . (string) env('DB_DATABASE') . "\"");
+            }
         }
     }
 
