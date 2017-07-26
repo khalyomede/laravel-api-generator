@@ -71,6 +71,20 @@ class ApiGeneratorCommand extends Command
         }
     }
 
+    private function primaryKey() {
+        $indexes = DB::connection()->getDoctrineSchemaManager()->listTableIndexes( $this->table );
+
+        $column = '';
+
+        foreach( $indexes as $index ) {
+            if( $index->isPrimary() ) {
+                $column = $index->getColumns()[0];
+            }
+        }
+
+        return $column;
+    }
+
     private function tableBlackList() {
         return array_diff( $this->tables(), $this->getOption('noTable') );
     }
