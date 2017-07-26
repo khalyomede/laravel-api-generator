@@ -34,9 +34,9 @@ http://localhost:8000/api/user
 ## Features
 - Scans your database and creates the models, controllers, and routes according to your tables properties
 - Can scope the tables you only need to expose to your API
+- Can blacklist tables you dont like
 
 ## Next features
-- Can blacklist tables you dont like
 - Can remove a prefix to each of your tables
 - Provides a neat JSON response for your API
 - Always returns a JSON response, no matter it is a success or a database outage, ...
