@@ -32,10 +32,10 @@ http://localhost:8000/api/user
 ```
 
 ## Features
-- Scans your database and creates the models, controllers, and routes according to your tables properties
-- Can scope the tables you only need to expose to your API
-- Can blacklist tables you dont like
-- Can remove a prefix to each of your tables
+- Scans your database and creates the models, controllers, and routes according to your tables properties *since **0.0.1***
+- Can scope the tables you only need to expose to your API *since **0.1.0***
+- Can blacklist tables you dont like *since **0.2.0***
+- Can remove a prefix to each of your tables *since **0.3.0***
 
 ## Next features
 - Provides a neat JSON response for your API
