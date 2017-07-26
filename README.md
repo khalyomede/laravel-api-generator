@@ -88,6 +88,7 @@ Available commands:
  api
   api:generate         Generate models, controllers and API routes from a database.
 ```
+Last thing to check is that your `.env` file is well configured. This library will uses a valid database connection to perform all the necessary process to get your API up and runing. Make sure everything is okay and then you can follow examples by examples how to quickly get started with this generator.
 
 ## List of examples
 - [Example of usage 1 : basic usage](#example-of-usage-1--basic-usage)
