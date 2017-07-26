@@ -92,7 +92,7 @@ Available commands:
 ## List of examples
 - [Example of usage 1 : basic usage](#example-of-usage-1--basic-usage)
 - [Example of usage 2 : white-listing your prefered tables](#example-of-usage-2--white-listing-your-prefered-tables)
-- [Example of usage 3 : black listing the tables you dont want to expose](example-of-usage-3--black-listing-the-tables-you-dont-want-to-expose)
+- [Example of usage 3 : black listing the tables you dont want to expose](#example-of-usage-3--black-listing-the-tables-you-dont-want-to-expose)
 
 ## Example of usage 1 : basic usage
 This is the simplest example that scan your database to get all the table name and work from this array.
