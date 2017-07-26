@@ -40,13 +40,15 @@ This library has been made possible with the help of Services Providers. Laravel
 - Can blacklist tables you dont like *>= **0.2.0***
 - Can remove a prefix to each of your tables *>= **0.3.0***
 - Can blacklist columns of tables to improve security *>= **0.4.0***
+- Can fill your tables if you need some fake data *>= **0.5.0***
 
 ## Next features
 - Provides a neat JSON response for your API
 - Always returns a JSON response, no matter it is a success or a database outage, ...
 - Log everything, including fatal errors and exceptions
 - Creates your relationships according to your tables foreign keys
-- Can fill your tables if you need some fake data
+- Can specify which tables you want to fill with fake data
+- Can specify which tables you do not want to fill with fake data
 
 ## Pre-requisites
 You need to have an existing [Laravel](https://laravel.com/) **5.3+** project to be able to use this library.
@@ -99,6 +101,7 @@ Last thing to check is that your `.env` file is well configured. When everything
 - [Example of usage 3 : black listing the tables you dont want to expose](#example-of-usage-3--black-listing-the-tables-you-dont-want-to-expose)
 - [Example of usage 4 : removing a suffix for each of the table exposed](#example-of-usage-4--removing-a-suffix-for-each-of-the-table-exposed)
 - [Example of usage 5 : removing columns from some particular tables](#example-of-usage-5--removing-columns-from-some-particular-tables)
+- [Example of usage 6 : inserting fake data after the routes have been generated](#example-of-usage-6--inserting-fake-data-after-the-routes-have-been-generated)
 
 ## Example of usage 1 : basic usage
 This is the simplest example that scan your database to get all the table name and work from this array.
@@ -140,6 +143,17 @@ This will removes the column from the all the `GET` methods, but you can still a
 php artisan api:generate --noCol=user.password,customer.birthDate
 ```
 This will expose all columns of all the tables, except for the tables `user` and `customer` that will be nerfed for the `show` and `index` (`GET`) methods.
+
+[back to the example list](#list-of-examples)
+## Example of usage 6 : inserting fake data after the routes have been generated
+This comes really handy if you worked on your database schema but do not have data yet.
+**WARNING** use with caution as this may add news rows to already filled tables.
+```bash
+php artisan api:generate --fake=10
+```
+This will genrate all the necessary files to build the API, and will creates 10 rows of fake data to help you begin to work with near-production API resources.
+
+*Note :* The string columns will be filled with one single sentence of Lorem Ipsum.
 
 [back to the example list](#list-of-examples)
 ## Help documentation
