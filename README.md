@@ -32,10 +32,11 @@ http://localhost:8000/api/user
 ```
 
 ## Features
-- Scans your database and creates the models, controllers, and routes according to your tables properties *since **0.0.1***
-- Can scope the tables you only need to expose to your API *since **0.1.0***
-- Can blacklist tables you dont like *since **0.2.0***
-- Can remove a prefix to each of your tables *since **0.3.0***
+- Scans your database and creates the models, controllers, and routes according to your tables properties *>= **0.0.1***
+- Can scope the tables you only need to expose to your API *>= **0.1.0***
+- Can blacklist tables you dont like *>= **0.2.0***
+- Can remove a prefix to each of your tables *>= **0.3.0***
+- Can blacklist columns of tables to improve security *>= **0.4.0***
 
 ## Next features
 - Provides a neat JSON response for your API
@@ -43,7 +44,6 @@ http://localhost:8000/api/user
 - Log everything, including fatal errors and exceptions
 - Creates your relationships according to your tables foreign keys
 - Can fill your tables if you need some fake data
-- Can blacklist columns of tables to improve security
 
 ## Pre-requisites
 You need to have an existing [Laravel](https://laravel.com/) **5.3+** project to be able to use this library.
@@ -94,6 +94,7 @@ Available commands:
 - [Example of usage 2 : white-listing your prefered tables](#example-of-usage-2--white-listing-your-prefered-tables)
 - [Example of usage 3 : black listing the tables you dont want to expose](#example-of-usage-3--black-listing-the-tables-you-dont-want-to-expose)
 - [Example of usage 4 : removing a suffix for each of the table exposed](#example-of-usage-4--removing-a-suffix-for-each-of-the-table-exposed)
+- [Example of usage 5 : removing columns from some particular tables](#example-of-usage-5--removing-columns-from-some-particular-tables)
 
 ## Example of usage 1 : basic usage
 This is the simplest example that scan your database to get all the table name and work from this array.
@@ -127,6 +128,14 @@ php artisan api:generate --suffix=wp_
 *Result :* this will removing the word at the begining of each tables, so each of the related models, controllers, and routes will be cleaned in consequence.
 
 **Note :** If your tables do not begins with the word, this will have no effects on the route name.
+
+[back to the example list](#list-of-examples)
+## Example of usage 5 : removing columns from some particular tables
+This will removes the column from the all the `GET` methods, but you can still add some values to these columns using `POST`, `PUT/PATCH` or `DELETE` methods. This is usefull if for example you do not want to expose passwords of users after they have been creating (thus, preventing people that scan your network from getting this information through `GET`).
+```bash
+php artisan api:generate --noCol=user.password,customer.birthDate
+```
+This will expose all columns of all the tables, except for the tables `user` and `customer` that will be nerfed for the `show` and `index` (`GET`) methods.
 
 [back to the example list](#list-of-examples)
 ## Help documentation
