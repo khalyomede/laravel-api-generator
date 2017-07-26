@@ -85,6 +85,10 @@ class ApiGeneratorCommand extends Command
         return $column;
     }
 
+    private function columns() {
+        return DB::getSchemaBuilder()->getColumnListing( $this->table );
+    }
+
     private function tableBlackList() {
         return array_diff( $this->tables(), $this->getOption('noTable') );
     }
