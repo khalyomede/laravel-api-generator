@@ -15,7 +15,7 @@ class ApiGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'api:generate {--table= : Comma separated list of table you ONLY want to expose}';
+    protected $signature = 'api:generate {--table= : Comma separated list of table you ONLY want to expose} {--noTable= : Comma separated list of table you DONT WANT to expose. Each table that is not in this list will be exposed. If you specify --table option, this option will be ignored.}';
 
     /**
      * The console command description.
@@ -45,16 +45,23 @@ class ApiGeneratorCommand extends Command
      */
     public function handle()
     {
-        $tables = [];
-
         /**
          * White list
          */
         if( $this->hasTheOption('table') ) {
             $this->tables = $this->getOption('table');
         }
+        /**
+         * Black list
+         */
+        else if( $this->hasTheOption('noTable') ) {
+            $this->tables = $this->tableBlackList();
+        }
+        /**
+         * Every tables
+         */
         else {
-            $this->tables = $this->tables();    
+            $this->tables = $this->tables();
         }
 
         $this->checkIfTablesExist();
@@ -62,6 +69,10 @@ class ApiGeneratorCommand extends Command
         foreach( $this->tables as $this->table ) {
             $this->buildApi();
         }
+    }
+
+    private function tableBlackList() {
+        return array_diff( $this->tables(), $this->getOption('noTable') );
     }
 
     private function checkIfTablesExist() {
