@@ -89,11 +89,6 @@ Available commands:
   api:generate         Generate models, controllers and API routes from a database.
 ```
 
-## Limitations
-- For now, if you try to run another time the command, this will not override previous routes but instead this will add again all the necessary routes. This has no impact in the final usage, but this can make the file `/routes/api.php` a little bit overwhelmed if you run it several times.
-- The code of each models is not as clear as it should be. An effort should be made to re-order the variables.
-- Currently there is no checking if you specify table that does not exists in filters option like `--table`. They will be "available" but will throw a fatal exception because the related table does not exists when you will browse the related API routes. Futures update will check the existence of the table prior its processing.
-
 ## List of examples
 - [Example of usage 1 : basic usage](#example-of-usage-1--basic-usage)
 - [Example of usage 2 : white-listing your prefered tables](#example-of-usage-2--white-listing-your-prefered-tables)
@@ -127,3 +122,8 @@ Each time your run this command, at least 3 files are created :
 
 ## Why should I use it
 The main advantage is to make an API quickly. The ultimate goal is to let you focus on things that have a value, like user interfaces and innovations.
+
+## Limitations
+- For now, if you try to run another time the command, this will not override previous routes but instead this will add again all the necessary routes. This has no impact in the final usage, but this can make the file `/routes/api.php` a little bit overwhelmed if you run it several times.
+- The code of each models is not as clear as it should be. An effort should be made to re-order the variables.
+- ~~Currently there is no checking if you specify table that does not exists in filters option like `--table`. They will be "available" but will throw a fatal exception because the related table does not exists when you will browse the related API routes. Futures update will check the existence of the table prior its processing~~ **fixed** 2017-07-26.
