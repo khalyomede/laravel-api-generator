@@ -102,6 +102,7 @@ Last thing to check is that your `.env` file is well configured. When everything
 - [Example of usage 4 : removing a prefix for each of the table exposed](#example-of-usage-4--removing-a-prefix-for-each-of-the-table-exposed)
 - [Example of usage 5 : removing columns from some particular tables](#example-of-usage-5--removing-columns-from-some-particular-tables)
 - [Example of usage 6 : inserting fake data after the routes have been generated](#example-of-usage-6--inserting-fake-data-after-the-routes-have-been-generated)
+- [Example of usage 7 : consistent JSON responses](#example-of-usage-7--consistent-JSON-responses)
 
 ## Example of usage 1 : basic usage
 This is the simplest example that scan your database to get all the table name and work from this array.
@@ -162,6 +163,43 @@ php artisan api:generate --fake=10
 This will genrate all the necessary files to build the API, and will creates 10 rows of fake data to help you begin to work with near-production API resources.
 
 *Note :* The string columns will be filled with one single sentence of Lorem Ipsum.
+
+[back to the example list](#list-of-examples)
+## Example of usage 7 : consistent JSON responses
+This will use JSun response standard to let you retrieve your resources in a consistent way. For each response, instead of a classic resource displaying when getting, updating, inserting or deleting a resource.
+```bash
+php artisan api:generate --consistent
+```
+For instance, in the GET (index) method, instead of getting response like :
+```
+{
+  "id": 1,
+  "firstName": "Anwar",
+  "lastName": "Nairi",
+  "birthDate": "2017-07-04",
+  "createdAt": "2017-07-26 00:00:00",
+  "updatedAt": "2017-07-26 00:00:00"
+}
+```
+You will get :
+```
+{
+  "status": "success",
+  "message": "",
+  "code": 0,
+  "data": [
+    {
+      "id": 1,
+      "firstName": "Anwar",
+      "lastName": "Nairi",
+      "birthDate": "2017-07-04",
+      "createdAt": "2017-07-26 00:00:00",
+      "updatedAt": "2017-07-26 00:00:00"
+    }
+  ]
+}
+```
+So as you can see each response will be filled with 4 attributes : a status`status`, a `message`, a `code` and a `data` (this last is always filled with your resource(s)). For more information and available value for those attributes, browser [khalyomede/jsun-php](https://github.com/khalyomede/jsun-php).
 
 [back to the example list](#list-of-examples)
 ## Help documentation
