@@ -16,7 +16,7 @@ class ApiGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'api:generate {--table=} {--noTable=} {--prefix=} {--noCol=} {--fake=}';
+    protected $signature = 'api:generate {--table= : Comma separated list of tables you only want to expose to your API} {--noTable= : Comma separated list of tables you want to exclude of the exposed tables (argument ignored if you used --table argument)} {--prefix= : Removes from all the table exposed this prefix (useful if you use a third-party system like Wordpress that prepend wp_ to each of the tables name)} {--noCol= : Comma separated dot syntaxed list of columns of tables you want to not expose for GET methods. Example : --noCol=user.password,customer.age} {--fake= : Number of rows to fill with fakes data in your database}';
 
     /**
      * The console command description.
