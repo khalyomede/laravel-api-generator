@@ -4,12 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ba9721ebe3ef04a0429c33c668da2e1",
-    "packages": [],
-    "packages-dev": [
+    "content-hash": "e1e2b22b18b06d0f6bd08ade462d530c",
+    "packages": [
         {
             "name": "khalyomede/jsun-php",
-            "version": "v1.0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/khalyomede/jsun-php.git",
@@ -35,12 +34,15 @@
                 "MIT"
             ],
             "description": "My personnal JSON formatting pattern for dealing equally with success, errors, or fail status when send and retrieving JSON data",
-            "time": "2017-07-27T15:58:02+00:00"
+            "time": "2017-07-27 15:58:02"
         }
     ],
+    "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "khalyomede/jsun-php": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
