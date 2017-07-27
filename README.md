@@ -118,7 +118,7 @@ php artisan api:generate --table=user,post
 ```
 *Result :* this will create the model, controller and routes only for the table `user` and `post` in this case.
 
-*Note :* If you specify a table that does not exists in your database, this will throw an error.
+**Note :** If you specify a table that does not exists in your database, this will throw an error.
 
 [back to the example list](#list-of-examples)
 ## Example of usage 3 : black listing the tables you dont want to expose
@@ -126,7 +126,11 @@ This will remove the tables you specify from your full table list, thus preventi
 ```bash
 php artisan api:generate --noTable=user,post
 ```
-If the full table list contains `user`, `post`, `address`, and `country`, only the tables `address` and `country` will be exposed. **Note :** if you specifyied `--table` white-list, `--noTable` will simply be ignored.
+If the full table list contains `user`, `post`, `address`, and `country`, only the tables `address` and `country` will be exposed. 
+
+**Note :** if you already specifyied [`--table`](#example-of-usage-2--white-listing-your-prefered-tables) option, this option will be ignored.
+
+**Note :** If you specify a table that does not exists in your database, this will throw an error.
 
 [back to the example list](#list-of-examples)
 ## Example of usage 4 : removing a prefix for each of the table exposed
@@ -145,6 +149,8 @@ This will removes the column from the all the `GET` methods, but you can still a
 php artisan api:generate --noCol=user.password,customer.birthDate
 ```
 This will expose all columns of all the tables, except for the tables `user` and `customer` that will be nerfed for the `show` and `index` (`GET`) methods.
+
+**Note :** If you specify column or table that does not exists, this will have no effect on the created model and exposed column in your API.
 
 [back to the example list](#list-of-examples)
 ## Example of usage 6 : inserting fake data after the routes have been generated
