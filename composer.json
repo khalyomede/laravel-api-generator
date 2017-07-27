@@ -6,8 +6,7 @@
     "minimum-stability": "dev",
     "require": {
     	"php": ">=5.3.0",
-        "khalyomede/jsun-php": "dev-master"
-
+        "khalyomede/jsun-php": "~1"
     },
     "autoload": {
     	"psr-4": {
