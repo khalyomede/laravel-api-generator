@@ -4,6 +4,7 @@ namespace Khalyomede\ApiGenerator;
 
 use Illuminate\Console\Command;
 use Faker\Factory as Faker;
+use Khalyomede\Jsun as Response;
 use Exception;
 use DB;
 
@@ -16,7 +17,7 @@ class ApiGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'api:generate {--table= : Coma separated list of tables you only want to expose} {--noTable= : Coma separated list of tables you want to exclude from the exposed tables} {--prefix= : String to remove for each exposed tables} {--noCol= : Coma separated list of table followed by a dot and the name of the column name you do not want to expose through GET methods} {--fake= : Number of rows to add to the fake data inserted in the exposed tables}';
+    protected $signature = 'api:generate {--table= : Coma separated list of tables you only want to expose} {--noTable= : Coma separated list of tables you want to exclude from the exposed tables} {--prefix= : String to remove for each exposed tables} {--noCol= : Coma separated list of table followed by a dot and the name of the column name you do not want to expose through GET methods} {--fake= : Number of rows to add to the fake data inserted in the exposed tables} {--consistent}';
 
     /**
      * The console command description.
@@ -339,17 +340,34 @@ class ApiGeneratorCommand extends Command
         /**
          * index
          */
-        $code[16 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::all();';
+        if( $this->option('consistent') ) {
+            $code[16 - 1] = "\t\t" . 'return \\Khalyomede\\JSun::data(\\App\\' . $modelName . '::all())->success()->toArray();';    
+        }
+        else {
+            $code[16 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::all();';    
+        }
+        
         
         /**
          * store
          */
-        $code[37 - 1] = "\t\t" . "return \\App\\$modelName" . "::findOrFail( \\App\\$modelName" . '::create( $request->all() )->id );';
+        if( $this->option('consistent') ) {
+            $code[37 - 1] = "\t\t" . "return \\Khalyomede\\JSun::data(\\App\\$modelName" . "::findOrFail( \\App\\$modelName" . '::create( $request->all() )->id ))->success()->toArray();';
+        }
+        else {
+            $code[37 - 1] = "\t\t" . "return \\App\\$modelName" . "::findOrFail( \\App\\$modelName" . '::create( $request->all() )->id );';    
+        }        
         
         /**
          * show
          */
-        $code[48 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );';
+        if( $this->option('consistent') ) {
+            $code[48 - 1] = "\t\t" . 'return \\Khalyomede\\JSun::data(\\App\\' . $modelName . '::findOrFail( $id ))->success()->toArray();';    
+        }
+        else {
+            $code[48 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );';
+        }
+        
 
         /**
          * update
@@ -362,7 +380,13 @@ class ApiGeneratorCommand extends Command
         array_splice( $code, 71 + 4, 0, "\t\t" . '' );
         array_splice( $code, 71 + 5, 0, "\t\t" . '$' . $name . '->save();' );
         array_splice( $code, 71 + 6, 0, "\t\t" . '' );
-        array_splice( $code, 71 + 7, 0, "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );' );
+
+        if( $this->option('consistent') ) {
+            array_splice( $code, 71 + 7, 0, "\t\t" . 'return \\Khalyomede\\JSun::data(\\App\\' . $modelName . '::findOrFail( $id ))->success()->toArray();' );    
+        }
+        else {
+            array_splice( $code, 71 + 7, 0, "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );' );    
+        }        
 
         /**
          * delete
@@ -378,7 +402,13 @@ class ApiGeneratorCommand extends Command
         array_splice( $code, 90 + 0, 0, "\t\t" . '' );
         array_splice( $code, 90 + 1, 0, "\t\t" . '$' . $name . '->delete();' );
         array_splice( $code, 90 + 2, 0, "\t\t" . '' );
-        array_splice( $code, 90 + 3, 0, "\t\t" . 'return $' . $name . ';' );
+
+        if( $this->option('consistent') ) {
+            array_splice( $code, 90 + 3, 0, "\t\t" . 'return \\Khalyomede\\JSun::data($' . $name . ')->success()->toArray();' );
+        }
+        else {
+            array_splice( $code, 90 + 3, 0, "\t\t" . 'return $' . $name . ';' );
+        }
 
         file_put_contents( $this->controllerPath(), implode( $code, "\n" ) );
     }
