@@ -38,7 +38,7 @@ This library has been made possible with the help of Services Providers. Laravel
 - Scans your database and creates the models, controllers, and routes according to your tables properties *>= **0.0.1***
 - Can scope the tables you only need to expose to your API *>= **0.1.0***
 - Can blacklist tables you dont like *>= **0.2.0***
-- Can remove a prefix to each of your tables *>= **0.3.0***
+- Can remove a prefix to each of your exposed tables *>= **0.3.0***
 - Can blacklist columns of tables to improve security *>= **0.4.0***
 - Can fill your tables if you need some fake data *>= **0.5.0***
 
@@ -99,7 +99,7 @@ Last thing to check is that your `.env` file is well configured. When everything
 - [Example of usage 1 : basic usage](#example-of-usage-1--basic-usage)
 - [Example of usage 2 : white-listing your prefered tables](#example-of-usage-2--white-listing-your-prefered-tables)
 - [Example of usage 3 : black listing the tables you dont want to expose](#example-of-usage-3--black-listing-the-tables-you-dont-want-to-expose)
-- [Example of usage 4 : removing a suffix for each of the table exposed](#example-of-usage-4--removing-a-suffix-for-each-of-the-table-exposed)
+- [Example of usage 4 : removing a prefix for each of the table exposed](#example-of-usage-4--removing-a-prefix-for-each-of-the-table-exposed)
 - [Example of usage 5 : removing columns from some particular tables](#example-of-usage-5--removing-columns-from-some-particular-tables)
 - [Example of usage 6 : inserting fake data after the routes have been generated](#example-of-usage-6--inserting-fake-data-after-the-routes-have-been-generated)
 
@@ -118,6 +118,8 @@ php artisan api:generate --table=user,post
 ```
 *Result :* this will create the model, controller and routes only for the table `user` and `post` in this case.
 
+*Note :* If you specify a table that does not exists in your database, this will throw an error.
+
 [back to the example list](#list-of-examples)
 ## Example of usage 3 : black listing the tables you dont want to expose
 This will remove the tables you specify from your full table list, thus preventing those to be exposed.
@@ -127,10 +129,10 @@ php artisan api:generate --noTable=user,post
 If the full table list contains `user`, `post`, `address`, and `country`, only the tables `address` and `country` will be exposed. **Note :** if you specifyied `--table` white-list, `--noTable` will simply be ignored.
 
 [back to the example list](#list-of-examples)
-## Example of usage 4 : removing a suffix for each of the table exposed
+## Example of usage 4 : removing a prefix for each of the table exposed
 This removes, from all table name, the word specifyied at the begining of your tables names. This can be useful if for example you are using a third-party system like Wordpress that will add some prefix to your table, but you prefer to keep it readable when asking your API some resources. 
 ```bash
-php artisan api:generate --suffix=wp_
+php artisan api:generate --prefix=wp_
 ```
 *Result :* this will removing the word at the begining of each tables, so each of the related models, controllers, and routes will be cleaned in consequence.
 
@@ -172,7 +174,8 @@ The main advantage is to make an API quickly. The ultimate goal is to let you fo
 ## Limitations
 - For now, if you try to run another time the command, this will not override previous routes but instead this will add again all the necessary routes. This has no impact in the final usage, but this can make the file `/routes/api.php` a little bit overwhelmed if you run it several times.
 - The code of each models is not as clear as it should be. An effort should be made to re-order the variables.
-- ~~Currently there is no checking if you specify table that does not exists in filters option like `--table`. They will be "available" but will throw a fatal exception because the related table does not exists when you will browse the related API routes. Futures update will check the existence of the table prior its processing~~ **fixed** 2017-07-26 since `v0.1.1`.
+- ~~Currently there is no checking if you specify table that does not exists in filters option like `--table`. They will be "available" but will throw a fatal exception because the related table does not exists when you will browse the related API routes. Futures update will check the existence of the table prior its processing~~ **fixed** since `v0.1.1`.
+- If you specify a prefix for your tables, you will still need to constantly prepend this prefix to the filters (like `--table` and `noTable`). An effort should be made to automatically add the prefix if needed.
 
 ## Semantic Version ready
 This library follows the version [semver guidelines v2.0.0](http://semver.org/) that ensure every step we engage, by adding new functionalities or providing bug fixes, follows these guide and make your job easier by trusting this library as versioningly stable. We strongly encourage using always the last version of the major version number, as it always provides the latest security patches. If you would like to go from a major version to another, an effort will be done to help users passing from one to another.
