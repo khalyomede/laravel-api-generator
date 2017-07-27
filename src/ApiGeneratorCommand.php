@@ -16,7 +16,7 @@ class ApiGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'api:generate {--table=} {--noTable=} {--suffix=} {--noCol=} {--fake=}';
+    protected $signature = 'api:generate {--table=} {--noTable=} {--prefix=} {--noCol=} {--fake=}';
 
     /**
      * The console command description.
@@ -319,7 +319,7 @@ class ApiGeneratorCommand extends Command
     }
 
     private function modelName() {
-        return $this->hasTheOption('suffix') ? ucfirst( preg_replace( "/^\b" . $this->getFirstOption('suffix') . "/i", '', $this->table ) ) : ucfirst( $this->table );
+        return $this->hasTheOption('prefix') ? ucfirst( preg_replace( "/^\b" . $this->getFirstOption('prefix') . "/i", '', $this->table ) ) : ucfirst( $this->table );
     }
 
     private function createController() {
