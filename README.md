@@ -102,7 +102,7 @@ Last thing to check is that your `.env` file is well configured. When everything
 - [Example of usage 4 : removing a prefix for each of the table exposed](#example-of-usage-4--removing-a-prefix-for-each-of-the-table-exposed)
 - [Example of usage 5 : removing columns from some particular tables](#example-of-usage-5--removing-columns-from-some-particular-tables)
 - [Example of usage 6 : inserting fake data after the routes have been generated](#example-of-usage-6--inserting-fake-data-after-the-routes-have-been-generated)
-- [Example of usage 7 : consistent JSON responses](#example-of-usage-7--consistent-JSON-responses)
+- [Example of usage 7 : consistent JSON responses](#example-of-usage-7--consistent-json-responses)
 
 ## Example of usage 1 : basic usage
 This is the simplest example that scan your database to get all the table name and work from this array.
