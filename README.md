@@ -42,10 +42,10 @@ This library has been made possible with the help of Services Providers. Laravel
 - Can blacklist columns of tables to improve security *>= **0.4.0***
 - Can fill your tables if you need some fake data *>= **0.5.0***
 - Can provide consistent JSON responses instead of just returning the resource *>= **0.7.0***
+- Always returns a JSON response, no matter it is a success or a database outage, ... *>= **0.10.0***
 
 ## Next features
-- Always returns a JSON response, no matter it is a success or a database outage, ...
-- Log everything, including fatal errors and exceptions
+- Can log everything, including errors, database outage, ...
 - Creates your relationships according to your tables foreign keys
 - Can specify which tables you want to fill with fake data
 - Can specify which tables you do not want to fill with fake data
