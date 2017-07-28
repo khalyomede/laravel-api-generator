@@ -347,12 +347,20 @@ class ApiGeneratorCommand extends Command
             array_splice($code, 16 + 1, 0, "\t\t\t" . '');
             array_splice($code, 16 + 2, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( ' . '$' . $name . 'List )->success()->toArray();');
             array_splice($code, 16 + 3, 0, "\t\t" . '}');
-            array_splice($code, 16 + 4, 0, "\t\t" . 'catch( Exception $e ) {');
+            array_splice($code, 16 + 4, 0, "\t\t" . 'catch( \\Exception $e ) {');
             array_splice($code, 16 + 5, 0, "\t\t\t" . "return \\Khalyomede\\JSun::message('An error occured while fetching the data')->error()->toArray();");
             array_splice($code, 16 + 6, 0, "\t\t" . '}');
         }
         else {
-            $code[16 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::all();';    
+            $code[16 - 1] = "\t\t" . 'try {';  
+
+            array_splice( $code, 16 + 0, 0, "\t\t\t" . '$' . $name . 'List = \\App\\' . $modelName . '::all();' );
+            array_splice( $code, 16 + 1, 0, "\t\t\t" . '' );
+            array_splice( $code, 16 + 2, 0, "\t\t\t" . 'return $' . $name . 'List;' );
+            array_splice( $code, 16 + 3, 0, "\t\t" . '}' );
+            array_splice( $code, 16 + 4, 0, "\t\t" . 'catch( \\Exception $e ) {' );
+            array_splice( $code, 16 + 5, 0, "\t\t\t" . 'return [];' );
+            array_splice( $code, 16 + 6, 0, "\t\t" . '}' );
         }        
         
         /**
@@ -365,12 +373,12 @@ class ApiGeneratorCommand extends Command
             array_splice($code, 44 + 1, 0, "\t\t\t" . '');
             array_splice($code, 44 + 2, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( $' . $name . ' )->success()->toArray();' );
             array_splice($code, 44 + 3, 0, "\t\t" . '}');
-            array_splice($code, 44 + 4, 0, "\t\t" . 'catch( Exception $e ) {');
+            array_splice($code, 44 + 4, 0, "\t\t" . 'catch( \\Exception $e ) {');
             array_splice($code, 44 + 5, 0, "\t\t\t" . "return \\Khalyomede\\JSun::message('An error occured while fetching the data')->error()->toArray();");
             array_splice($code, 44 + 6, 0, "\t\t" . '}');
         }
         else {
-            $code[37 - 1] = "\t\t" . "return \\App\\$modelName" . "::findOrFail( \\App\\$modelName" . '::create( $request->input() )->id );';    
+            $code[44 - 1] = "\t\t" . "return \\App\\$modelName" . "::findOrFail( \\App\\$modelName" . '::create( $request->input() )->id );';    
         }        
         
         /**
@@ -383,12 +391,12 @@ class ApiGeneratorCommand extends Command
             array_splice( $code, 62 + 1, 0, "\t\t\t" . '' );
             array_splice( $code, 62 + 2, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( $' . $name . ' )->success()->toArray();' );
             array_splice( $code, 62 + 3, 0, "\t\t" . '}' );
-            array_splice( $code, 62 + 4, 0, "\t\t" . 'catch( Exception $e ) {' );
+            array_splice( $code, 62 + 4, 0, "\t\t" . 'catch( \\Exception $e ) {' );
             array_splice( $code, 62 + 5, 0, "\t\t\t" . "return \Khalyomede\JSun::message('An error occured while fetching the data')->error()->toArray();" );
             array_splice( $code, 62 + 6, 0, "\t\t" . "}" );
         }
         else {
-            $code[48 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );';
+            $code[55 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );';
         }
         
         /**
@@ -409,20 +417,20 @@ class ApiGeneratorCommand extends Command
             array_splice( $code, 92 + 9, 0, "\t\t\t" . '' );
             array_splice( $code, 92 + 10, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( $' . $name . ' )->success()->toArray();' );
             array_splice( $code, 92 + 11, 0, "\t\t" . '}' );
-            array_splice( $code, 92 + 12, 0, "\t\t" . 'catch( Exception $e ) {' );
+            array_splice( $code, 92 + 12, 0, "\t\t" . 'catch( \\Exception $e ) {' );
             array_splice( $code, 92 + 13, 0, "\t\t\t" . "return \Khalyomede\JSun::message('An error occured while fetching the data')->error()->toArray();" );
             array_splice( $code, 92 + 14, 0, "\t\t" . "}" );  
         }
         else {
-             $code[71 - 1] = "\t\t" . '$' . $name . ' = \\App\\' . $modelName .  '::findOrFail( $id );';
-            array_splice( $code, 71 + 0, 0, "\t\t" . '' );
-            array_splice( $code, 71 + 1, 0, "\t\t" . 'foreach( $request->input() as $key => $value ) {' );
-            array_splice( $code, 71 + 2, 0, "\t\t\t" . '$' . $name . '->{ $key } = $value;' );
-            array_splice( $code, 71 + 3, 0, "\t\t" . '}' );
-            array_splice( $code, 71 + 4, 0, "\t\t" . '' );
-            array_splice( $code, 71 + 5, 0, "\t\t" . '$' . $name . '->save();' );
-            array_splice( $code, 71 + 6, 0, "\t\t" . '' );
-            array_splice( $code, 71 + 7, 0, "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );' );    
+             $code[78 - 1] = "\t\t" . '$' . $name . ' = \\App\\' . $modelName .  '::findOrFail( $id );';
+            array_splice( $code, 78 + 0, 0, "\t\t" . '' );
+            array_splice( $code, 78 + 1, 0, "\t\t" . 'foreach( $request->input() as $key => $value ) {' );
+            array_splice( $code, 78 + 2, 0, "\t\t\t" . '$' . $name . '->{ $key } = $value;' );
+            array_splice( $code, 78 + 3, 0, "\t\t" . '}' );
+            array_splice( $code, 78 + 4, 0, "\t\t" . '' );
+            array_splice( $code, 78 + 5, 0, "\t\t" . '$' . $name . '->save();' );
+            array_splice( $code, 78 + 6, 0, "\t\t" . '' );
+            array_splice( $code, 78 + 7, 0, "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );' );    
         }
 
         /**
@@ -437,16 +445,16 @@ class ApiGeneratorCommand extends Command
             array_splice( $code, 118 + 3, 0, "\t\t\t" . '' );
             array_splice( $code, 118 + 4, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( $' . $name . ' )->success()->toArray();' );
             array_splice( $code, 118 + 5, 0, "\t\t" . '}' );
-            array_splice( $code, 118 + 6, 0, "\t\t" . 'catch( Exception $e ) {' );
+            array_splice( $code, 118 + 6, 0, "\t\t" . 'catch( \\Exception $e ) {' );
             array_splice( $code, 118 + 7, 0, "\t\t\t" . "return \Khalyomede\JSun::message('An error occured while fetching the data')->error()->toArray();" );
             array_splice( $code, 118 + 8, 0, "\t\t" . "}" );
         }
         else {
-            $code[90 - 1] = "\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );';
-            array_splice( $code, 90 + 0, 0, "\t\t" . '' );
-            array_splice( $code, 90 + 1, 0, "\t\t" . '$' . $name . '->delete();' );
-            array_splice( $code, 90 + 2, 0, "\t\t" . '' );
-            array_splice( $code, 90 + 3, 0, "\t\t" . 'return $' . $name . ';' );
+            $code[97 - 1] = "\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );';
+            array_splice( $code, 97 + 0, 0, "\t\t" . '' );
+            array_splice( $code, 97 + 1, 0, "\t\t" . '$' . $name . '->delete();' );
+            array_splice( $code, 97 + 2, 0, "\t\t" . '' );
+            array_splice( $code, 97 + 3, 0, "\t\t" . 'return $' . $name . ';' );
         }
 
         file_put_contents( $this->controllerPath(), implode( $code, "\n" ) );
