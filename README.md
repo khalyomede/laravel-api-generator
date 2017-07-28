@@ -174,8 +174,8 @@ For instance, in the GET (index) method, instead of getting response like :
 ```
 {
   "id": 1,
-  "firstName": "Anwar",
-  "lastName": "Nairi",
+  "firstName": "John",
+  "lastName": "Doe",
   "birthDate": "2017-07-04",
   "createdAt": "2017-07-26 00:00:00",
   "updatedAt": "2017-07-26 00:00:00"
@@ -190,8 +190,8 @@ You will get :
   "data": [
     {
       "id": 1,
-      "firstName": "Anwar",
-      "lastName": "Nairi",
+      "firstName": "John",
+      "lastName": "Doe",
       "birthDate": "2017-07-04",
       "createdAt": "2017-07-26 00:00:00",
       "updatedAt": "2017-07-26 00:00:00"
