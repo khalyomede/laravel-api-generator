@@ -341,72 +341,105 @@ class ApiGeneratorCommand extends Command
          * index
          */
         if( $this->option('consistent') ) {
-            $code[16 - 1] = "\t\t" . 'return \\Khalyomede\\JSun::data(\\App\\' . $modelName . '::all())->success()->toArray();';    
+            $code[16 - 1] = "\t\t" . 'try {';
+
+            array_splice($code, 16 + 0, 0, "\t\t\t" . '$' . $name . 'List = \\App\\' . $modelName . '::all();');
+            array_splice($code, 16 + 1, 0, "\t\t\t" . '');
+            array_splice($code, 16 + 2, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( ' . '$' . $name . 'List )->success()->toArray();');
+            array_splice($code, 16 + 3, 0, "\t\t" . '}');
+            array_splice($code, 16 + 4, 0, "\t\t" . 'catch( Exception $e ) {');
+            array_splice($code, 16 + 5, 0, "\t\t\t" . "return \\Khalyomede\\JSun::message('An error occured while fetching the data')->error()->toArray();");
+            array_splice($code, 16 + 6, 0, "\t\t" . '}');
         }
         else {
             $code[16 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::all();';    
-        }
-        
+        }        
         
         /**
          * store
          */
         if( $this->option('consistent') ) {
-            $code[37 - 1] = "\t\t" . "return \\Khalyomede\\JSun::data(\\App\\$modelName" . "::findOrFail( \\App\\$modelName" . '::create( $request->all() )->id ))->success()->toArray();';
+            $code[44 - 1] = "\t\t" . 'try {';
+
+            array_splice($code, 44 + 0, 0, "\t\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( \\App\\' . $modelName . '::create( $request->input() )->id );');
+            array_splice($code, 44 + 1, 0, "\t\t\t" . '');
+            array_splice($code, 44 + 2, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( $' . $name . ' )->success()->toArray();' );
+            array_splice($code, 44 + 3, 0, "\t\t" . '}');
+            array_splice($code, 44 + 4, 0, "\t\t" . 'catch( Exception $e ) {');
+            array_splice($code, 44 + 5, 0, "\t\t\t" . "return \\Khalyomede\\JSun::message('An error occured while fetching the data')->error()->toArray();");
+            array_splice($code, 44 + 6, 0, "\t\t" . '}');
         }
         else {
-            $code[37 - 1] = "\t\t" . "return \\App\\$modelName" . "::findOrFail( \\App\\$modelName" . '::create( $request->all() )->id );';    
+            $code[37 - 1] = "\t\t" . "return \\App\\$modelName" . "::findOrFail( \\App\\$modelName" . '::create( $request->input() )->id );';    
         }        
         
         /**
          * show
          */
         if( $this->option('consistent') ) {
-            $code[48 - 1] = "\t\t" . 'return \\Khalyomede\\JSun::data(\\App\\' . $modelName . '::findOrFail( $id ))->success()->toArray();';    
+            $code[62 - 1] = "\t\t" . 'return \\Khalyomede\\JSun::data(\\App\\' . $modelName . '::findOrFail( $id ))->success()->toArray();';    
+
+
         }
         else {
             $code[48 - 1] = "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );';
         }
         
-
         /**
          * update
-         */
-        $code[71 - 1] = "\t\t" . '$' . $name . ' = \\App\\' . $modelName .  '::findOrFail( $id );';
-        array_splice( $code, 71 + 0, 0, "\t\t" . '' );
-        array_splice( $code, 71 + 1, 0, "\t\t" . 'foreach( $request->input() as $key => $value ) {' );
-        array_splice( $code, 71 + 2, 0, "\t\t\t" . '$' . $name . '->{ $key } = $value;' );
-        array_splice( $code, 71 + 3, 0, "\t\t" . '}' );
-        array_splice( $code, 71 + 4, 0, "\t\t" . '' );
-        array_splice( $code, 71 + 5, 0, "\t\t" . '$' . $name . '->save();' );
-        array_splice( $code, 71 + 6, 0, "\t\t" . '' );
-
+         */     
         if( $this->option('consistent') ) {
-            array_splice( $code, 71 + 7, 0, "\t\t" . 'return \\Khalyomede\\JSun::data(\\App\\' . $modelName . '::findOrFail( $id ))->success()->toArray();' );    
+            $code[85 - 1] = "\t\t" . 'try {';
+            
+            array_splice( $code, 85 + 0, 0, "\t\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );' );
+            array_splice( $code, 85 + 1, 0, "\t\t\t" . '' );
+            array_splice( $code, 85 + 2, 0, "\t\t\t" . 'foreach( $request->input() as $key => $value ) {' );
+            array_splice( $code, 85 + 3, 0, "\t\t\t\t" . '$' . $name . '->{ $key } = $value;' );
+            array_splice( $code, 85 + 4, 0, "\t\t\t" . '}' );
+            array_splice( $code, 85 + 5, 0, "\t\t\t" . '' );
+            array_splice( $code, 85 + 6, 0, "\t\t\t" . '$' . $name . '->save();' );
+            array_splice( $code, 85 + 7, 0, "\t\t\t" . '' );
+            array_splice( $code, 85 + 8, 0, "\t\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );' );
+            array_splice( $code, 85 + 9, 0, "\t\t\t" . '' );
+            array_splice( $code, 85 + 10, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( $' . $name . ' )->success()->toArray();' );
+            array_splice( $code, 85 + 11, 0, "\t\t" . '}' );
+            array_splice( $code, 85 + 12, 0, "\t\t" . 'catch( Exception $e ) {' );
+            array_splice( $code, 85 + 13, 0, "\t\t\t" . "return \Khalyomede\JSun::message('An error occured while fetching the data')->error()->toArray();" );
+            array_splice( $code, 85 + 14, 0, "\t\t" . "}" );  
         }
         else {
+             $code[71 - 1] = "\t\t" . '$' . $name . ' = \\App\\' . $modelName .  '::findOrFail( $id );';
+            array_splice( $code, 71 + 0, 0, "\t\t" . '' );
+            array_splice( $code, 71 + 1, 0, "\t\t" . 'foreach( $request->input() as $key => $value ) {' );
+            array_splice( $code, 71 + 2, 0, "\t\t\t" . '$' . $name . '->{ $key } = $value;' );
+            array_splice( $code, 71 + 3, 0, "\t\t" . '}' );
+            array_splice( $code, 71 + 4, 0, "\t\t" . '' );
+            array_splice( $code, 71 + 5, 0, "\t\t" . '$' . $name . '->save();' );
+            array_splice( $code, 71 + 6, 0, "\t\t" . '' );
             array_splice( $code, 71 + 7, 0, "\t\t" . 'return \\App\\' . $modelName . '::findOrFail( $id );' );    
-        }        
+        }
 
         /**
          * delete
          */
-        /*
-            $country = \App\Country::findOrFail( $id );
-
-        $country->delete();
-
-        return $country;
-        */
-        $code[90 - 1] = "\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );';
-        array_splice( $code, 90 + 0, 0, "\t\t" . '' );
-        array_splice( $code, 90 + 1, 0, "\t\t" . '$' . $name . '->delete();' );
-        array_splice( $code, 90 + 2, 0, "\t\t" . '' );
-
         if( $this->option('consistent') ) {
-            array_splice( $code, 90 + 3, 0, "\t\t" . 'return \\Khalyomede\\JSun::data($' . $name . ')->success()->toArray();' );
+            $code[111 - 1] = "\t\t" . 'try {';
+
+            array_splice( $code, 111 + 0, 0, "\t\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );' );
+            array_splice( $code, 111 + 1, 0, "\t\t\t" . '' );
+            array_splice( $code, 111 + 2, 0, "\t\t\t" . '$' . $name . '->delete();' );
+            array_splice( $code, 111 + 3, 0, "\t\t\t" . '' );
+            array_splice( $code, 111 + 4, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( $' . $name . ' )->success()->toArray();' );
+            array_splice( $code, 111 + 5, 0, "\t\t" . '}' );
+            array_splice( $code, 111 + 6, 0, "\t\t" . 'catch( Exception $e ) {' );
+            array_splice( $code, 111 + 7, 0, "\t\t\t" . "return \Khalyomede\JSun::message('An error occured while fetching the data')->error()->toArray();" );
+            array_splice( $code, 111 + 8, 0, "\t\t" . "}" );
         }
         else {
+            $code[90 - 1] = "\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );';
+            array_splice( $code, 90 + 0, 0, "\t\t" . '' );
+            array_splice( $code, 90 + 1, 0, "\t\t" . '$' . $name . '->delete();' );
+            array_splice( $code, 90 + 2, 0, "\t\t" . '' );
             array_splice( $code, 90 + 3, 0, "\t\t" . 'return $' . $name . ';' );
         }
 
