@@ -460,13 +460,13 @@ class ApiGeneratorCommand extends Command
     private function createRoutes() {
         $code = $this->getRouteCodeToArray();
 
-        $lastLine = count($code) - 1;
+        $lastLine = count($code);
 
         $name = $this->routeName();
         $controllerName = $this->controllerName();
 
-        array_splice( $code, $lastLine + 0, 0, '' );
-        array_splice( $code, $lastLine + 1, 0, "Route::resource('/$name', '" . $controllerName . "');" );
+        array_splice( $code, $lastLine + 1, 0, '' );
+        array_splice( $code, $lastLine + 2, 0, "Route::resource('/$name', '" . $controllerName . "');" );
 
         $routesPath = $this->routesPath();
 
