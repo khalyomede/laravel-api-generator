@@ -1,5 +1,5 @@
 ![GitHub tag](https://img.shields.io/github/tag/khalyomede/laravel-api-generator.svg)
-![PHP minimum version](https://img.shields.io/badge/php-%3E%3D5.3.0-blue.svg)
+![PHP minimum required version](https://img.shields.io/badge/php-%3E%3D5.3.0-777BB4.svg)
 ![Laravel minimum version](https://img.shields.io/badge/laravel-%3E%3D5.3.0-orange.svg)
 
 # laravel-api-generator
