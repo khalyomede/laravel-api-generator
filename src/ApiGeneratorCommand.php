@@ -11,6 +11,7 @@ use DB;
 class ApiGeneratorCommand extends Command
 {
     const QUERY_SHOW_TABLES = 'SHOW TABLES';
+    const EXCEPTION_HANDLER_MIDDLEWARE = 'ExeptionHandlerMiddleware';
 
     /**
      * The name and signature of the console command.
@@ -47,6 +48,10 @@ class ApiGeneratorCommand extends Command
      */
     public function handle()
     {
+        $this->createMiddleware( self::EXCEPTION_HANDLER_MIDDLEWARE );
+
+        die();
+
         /**
          * White list
          */
@@ -71,6 +76,87 @@ class ApiGeneratorCommand extends Command
         foreach( $this->tables as $this->table ) {
             $this->buildApi();
         }
+    }
+
+    /**
+     * @todo clean up this method and all related methods by using private properties
+     */
+    private function createMiddleware( $name ) {
+        $path = app_path() . '/Http/Middleware/' . $name . '.php';
+
+        $this->deleteMiddleware( $path );
+
+        $this->call('make:middleware', [
+            'name' => $name
+        ]);
+
+        $this->fillMiddleware( $path );
+    }
+
+    private function deleteMiddleware( $path ) {
+        self::deleteFile( $path );
+    }
+
+    private function fillMiddleware( $path ) {
+        $code = explode("\n", file_get_contents( $path ) );
+
+        array_splice( $code, 5 + 0, 0, "use Illuminate\Database\Eloquent\ModelNotFoundException;" );
+        array_splice( $code, 5 + 1, 0, "use Illuminate\Validation\ValidationException;" );
+        array_splice( $code, 5 + 2, 0, "use Exception;" );
+        array_splice( $code, 5 + 3, 0, "use Khalyomede\JUR;" );
+
+        array_splice( $code, 12 + 0, 0, "\t" . 'const UNKNOWN_ERROR = 1;');
+        array_splice( $code, 12 + 1, 0, "\t" . 'const MODELNOTFOUND_ERROR = 2;');
+        array_splice( $code, 12 + 2, 0, "\t" . 'const VALIDATION_ERROR = -1;');
+
+        $code[24] = "\t\t" . '$output = $next($request);';
+        
+        array_splice( $code, 24 + 1, 0, "\t\t" . '' );
+        array_splice( $code, 24 + 2, 0, "\t\t" . 'try {' );
+        array_splice( $code, 24 + 3, 0, "\t\t\t" . 'if( ! is_null( $output->exception ) ) {' );
+        array_splice( $code, 24 + 4, 0, "\t\t\t\t" . 'throw new $output->exception;' );
+        array_splice( $code, 24 + 5, 0, "\t\t\t" . '}' );
+        array_splice( $code, 24 + 6, 0, "\t\t\t" . '' );
+        array_splice( $code, 24 + 7, 0, "\t\t\t" . 'return $output;' );
+        array_splice( $code, 24 + 8, 0, "\t\t" . '}' );
+        array_splice( $code, 24 + 9, 0, "\t\t" . 'catch( ValidationException $e ) {' );
+        array_splice( $code, 24 + 10, 0, "\t\t\t" . 'return response()->json(' );
+        array_splice( $code, 24 + 11, 0, "\t\t\t\t" . 'JUR::fail()' );
+        array_splice( $code, 24 + 12, 0, "\t\t\t\t" . '->code( self::VALIDATION_ERROR )' );
+        array_splice( $code, 24 + 13, 0, "\t\t\t\t" . '->message( $e->getMessage() )' );
+        array_splice( $code, 24 + 14, 0, "\t\t\t\t" . '->resolved()' );
+        array_splice( $code, 24 + 15, 0, "\t\t\t\t" . '->toArray()' );
+        array_splice( $code, 24 + 16, 0, "\t\t\t" . ');' );
+        array_splice( $code, 24 + 17, 0, "\t\t" . '}' );
+        array_splice( $code, 24 + 18, 0, "\t\t" . 'catch( ModelNotFoundException $e ) {' );
+        array_splice( $code, 24 + 19, 0, "\t\t\t" . 'return response()->json(' );
+        array_splice( $code, 24 + 20, 0, "\t\t\t\t" . 'JUR::error()' );
+        array_splice( $code, 24 + 21, 0, "\t\t\t\t\t" . '->code( self::MODELNOTFOUND_ERROR )' );
+        array_splice( $code, 24 + 22, 0, "\t\t\t\t\t" . '->resolved()' );
+        array_splice( $code, 24 + 23, 0, "\t\t\t\t\t" . '->toArray()' );
+        array_splice( $code, 24 + 24, 0, "\t\t\t" . ');' );
+        array_splice( $code, 24 + 25, 0, "\t\t" . '}' );
+        array_splice( $code, 24 + 26, 0, "\t\t" . 'catch( \Exception $e ) {' );
+        array_splice( $code, 24 + 27, 0, "\t\t\t" . 'return response()->json(' );
+        array_splice( $code, 24 + 28, 0, "\t\t\t\t" . 'JUR::error()' );
+        array_splice( $code, 24 + 29, 0, "\t\t\t\t\t" . '->code( self::UNKNOWN_ERROR )' );
+        array_splice( $code, 24 + 30, 0, "\t\t\t\t\t" . '->resolved()' );
+        array_splice( $code, 24 + 31, 0, "\t\t\t\t\t" . '->toArray()' );
+        array_splice( $code, 24 + 32, 0, "\t\t\t" . ');' );
+        array_splice( $code, 24 + 33, 0, "\t\t" . '}' );
+
+        /**
+         * File existence checkings
+         */
+        if( ! file_exists( $path ) ) {
+            die("$path does not exists");
+        }
+
+        if( ! is_writable( $path ) ) {
+            die( "$path is already opened in another program" );
+        }
+
+        file_put_contents( $path , implode($code, "\n") );
     }
 
     private function primaryKey() {
