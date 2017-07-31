@@ -154,7 +154,7 @@ class ApiGeneratorCommand extends Command
             array_splice( $code, 24 + 12, 0, "\t\t\t\t" . '->code( self::VALIDATION_ERROR )' );
             array_splice( $code, 24 + 13, 0, "\t\t\t\t" . '->message( $e->getMessage() )' );
             array_splice( $code, 24 + 14, 0, "\t\t\t\t" . '->resolved()' );
-            array_splice( $code, 24 + 15, 0, "\t\t\t\t" . '->toArray()' );
+            array_splice( $code, 24 + 15, 0, "\t\t\t\t" . '->toArray(), 400' );
             array_splice( $code, 24 + 16, 0, "\t\t\t" . ');' );
             array_splice( $code, 24 + 17, 0, "\t\t" . '}' );
             array_splice( $code, 24 + 18, 0, "\t\t" . 'catch( ModelNotFoundException $e ) {' );
@@ -162,7 +162,7 @@ class ApiGeneratorCommand extends Command
             array_splice( $code, 24 + 20, 0, "\t\t\t\t" . 'JUR::error()' );
             array_splice( $code, 24 + 21, 0, "\t\t\t\t\t" . '->code( self::MODELNOTFOUND_ERROR )' );
             array_splice( $code, 24 + 22, 0, "\t\t\t\t\t" . '->resolved()' );
-            array_splice( $code, 24 + 23, 0, "\t\t\t\t\t" . '->toArray()' );
+            array_splice( $code, 24 + 23, 0, "\t\t\t\t\t" . '->toArray(), 404' );
             array_splice( $code, 24 + 24, 0, "\t\t\t" . ');' );
             array_splice( $code, 24 + 25, 0, "\t\t" . '}' );
             array_splice( $code, 24 + 26, 0, "\t\t" . 'catch( \Exception $e ) {' );
@@ -170,7 +170,7 @@ class ApiGeneratorCommand extends Command
             array_splice( $code, 24 + 28, 0, "\t\t\t\t" . 'JUR::error()' );
             array_splice( $code, 24 + 29, 0, "\t\t\t\t\t" . '->code( self::UNKNOWN_ERROR )' );
             array_splice( $code, 24 + 30, 0, "\t\t\t\t\t" . '->resolved()' );
-            array_splice( $code, 24 + 31, 0, "\t\t\t\t\t" . '->toArray()' );
+            array_splice( $code, 24 + 31, 0, "\t\t\t\t\t" . '->toArray(), 500' );
             array_splice( $code, 24 + 32, 0, "\t\t\t" . ');' );
             array_splice( $code, 24 + 33, 0, "\t\t" . '}' );
         }
@@ -186,13 +186,13 @@ class ApiGeneratorCommand extends Command
             array_splice( $code, 21 + 6, 0, "\t\t\t" . 'return $output;' );
             array_splice( $code, 21 + 7, 0, "\t\t" . '}' );
             array_splice( $code, 21 + 8, 0, "\t\t" . 'catch( ValidationException $e ) {' );
-            array_splice( $code, 21 + 9, 0, "\t\t\t" . 'return response()->json( $e->getMessage() );' );
+            array_splice( $code, 21 + 9, 0, "\t\t\t" . 'return response()->json( $e->getMessage(), 400 );' );
             array_splice( $code, 21 + 10, 0, "\t\t" . '}' );
             array_splice( $code, 21 + 11, 0, "\t\t" . 'catch( ModelNotFoundException $e ) {' );
-            array_splice( $code, 21 + 12, 0, "\t\t\t" . "return response()->json('the resource could not be found or has been removed');" );
+            array_splice( $code, 21 + 12, 0, "\t\t\t" . "return response()->json('the resource could not be found or has been removed', 404);" );
             array_splice( $code, 21 + 13, 0, "\t\t" . '}' );
             array_splice( $code, 21 + 14, 0, "\t\t" . 'catch( \Exception $e ) {' );
-            array_splice( $code, 21 + 15, 0, "\t\t\t" . "return response()->json('the request could not be processed');" );
+            array_splice( $code, 21 + 15, 0, "\t\t\t" . "return response()->json('the request could not be processed', 500);" );
             array_splice( $code, 21 + 16, 0, "\t\t" . '}' );
         }        
 
