@@ -11,7 +11,7 @@ use DB;
 class ApiGeneratorCommand extends Command
 {
     const QUERY_SHOW_TABLES = 'SHOW TABLES';
-    const EXCEPTION_HANDLER_MIDDLEWARE = 'ExeptionHandlerMiddleware';
+    const EXCEPTION_HANDLER_MIDDLEWARE = 'ExceptionHandlerMiddleware';
 
     /**
      * The name and signature of the console command.
@@ -50,8 +50,6 @@ class ApiGeneratorCommand extends Command
     {
         $this->createMiddleware( self::EXCEPTION_HANDLER_MIDDLEWARE );
 
-        die();
-
         /**
          * White list
          */
@@ -73,9 +71,38 @@ class ApiGeneratorCommand extends Command
 
         $this->checkIfTablesExist();
 
+        $this->openRouteGroup();
+
         foreach( $this->tables as $this->table ) {
             $this->buildApi();
         }
+
+        $this->closeRouteGroup();
+    }
+
+    private function openRouteGroup() {
+        $code = $this->getRouteCodeToArray();
+
+        $lastLine = count($code);
+
+        array_splice( $code, $lastLine + 0, 0, '' );
+        array_splice( $code, $lastLine + 1, 0, "Route::group(['middleware' => \App\Http\Middleware\ExceptionHandlerMiddleware::class], function() {" );
+
+        $routesPath = $this->routesPath();
+
+        file_put_contents( $routesPath, implode( $code, "\n" ) );
+    }
+
+    private function closeRouteGroup() {
+        $code = $this->getRouteCodeToArray();
+
+        $lastLine = count($code);
+
+        array_splice( $code, $lastLine, 0, "});" );
+
+        $routesPath = $this->routesPath();
+
+        file_put_contents( $routesPath, implode( $code, "\n" ) );
     }
 
     /**
@@ -103,47 +130,71 @@ class ApiGeneratorCommand extends Command
         array_splice( $code, 5 + 0, 0, "use Illuminate\Database\Eloquent\ModelNotFoundException;" );
         array_splice( $code, 5 + 1, 0, "use Illuminate\Validation\ValidationException;" );
         array_splice( $code, 5 + 2, 0, "use Exception;" );
-        array_splice( $code, 5 + 3, 0, "use Khalyomede\JUR;" );
 
-        array_splice( $code, 12 + 0, 0, "\t" . 'const UNKNOWN_ERROR = 1;');
-        array_splice( $code, 12 + 1, 0, "\t" . 'const MODELNOTFOUND_ERROR = 2;');
-        array_splice( $code, 12 + 2, 0, "\t" . 'const VALIDATION_ERROR = -1;');
+        if( $this->option('consistent') ) {           
+            array_splice( $code, 5 + 3, 0, "use Khalyomede\JUR;" );
 
-        $code[24] = "\t\t" . '$output = $next($request);';
-        
-        array_splice( $code, 24 + 1, 0, "\t\t" . '' );
-        array_splice( $code, 24 + 2, 0, "\t\t" . 'try {' );
-        array_splice( $code, 24 + 3, 0, "\t\t\t" . 'if( ! is_null( $output->exception ) ) {' );
-        array_splice( $code, 24 + 4, 0, "\t\t\t\t" . 'throw new $output->exception;' );
-        array_splice( $code, 24 + 5, 0, "\t\t\t" . '}' );
-        array_splice( $code, 24 + 6, 0, "\t\t\t" . '' );
-        array_splice( $code, 24 + 7, 0, "\t\t\t" . 'return $output;' );
-        array_splice( $code, 24 + 8, 0, "\t\t" . '}' );
-        array_splice( $code, 24 + 9, 0, "\t\t" . 'catch( ValidationException $e ) {' );
-        array_splice( $code, 24 + 10, 0, "\t\t\t" . 'return response()->json(' );
-        array_splice( $code, 24 + 11, 0, "\t\t\t\t" . 'JUR::fail()' );
-        array_splice( $code, 24 + 12, 0, "\t\t\t\t" . '->code( self::VALIDATION_ERROR )' );
-        array_splice( $code, 24 + 13, 0, "\t\t\t\t" . '->message( $e->getMessage() )' );
-        array_splice( $code, 24 + 14, 0, "\t\t\t\t" . '->resolved()' );
-        array_splice( $code, 24 + 15, 0, "\t\t\t\t" . '->toArray()' );
-        array_splice( $code, 24 + 16, 0, "\t\t\t" . ');' );
-        array_splice( $code, 24 + 17, 0, "\t\t" . '}' );
-        array_splice( $code, 24 + 18, 0, "\t\t" . 'catch( ModelNotFoundException $e ) {' );
-        array_splice( $code, 24 + 19, 0, "\t\t\t" . 'return response()->json(' );
-        array_splice( $code, 24 + 20, 0, "\t\t\t\t" . 'JUR::error()' );
-        array_splice( $code, 24 + 21, 0, "\t\t\t\t\t" . '->code( self::MODELNOTFOUND_ERROR )' );
-        array_splice( $code, 24 + 22, 0, "\t\t\t\t\t" . '->resolved()' );
-        array_splice( $code, 24 + 23, 0, "\t\t\t\t\t" . '->toArray()' );
-        array_splice( $code, 24 + 24, 0, "\t\t\t" . ');' );
-        array_splice( $code, 24 + 25, 0, "\t\t" . '}' );
-        array_splice( $code, 24 + 26, 0, "\t\t" . 'catch( \Exception $e ) {' );
-        array_splice( $code, 24 + 27, 0, "\t\t\t" . 'return response()->json(' );
-        array_splice( $code, 24 + 28, 0, "\t\t\t\t" . 'JUR::error()' );
-        array_splice( $code, 24 + 29, 0, "\t\t\t\t\t" . '->code( self::UNKNOWN_ERROR )' );
-        array_splice( $code, 24 + 30, 0, "\t\t\t\t\t" . '->resolved()' );
-        array_splice( $code, 24 + 31, 0, "\t\t\t\t\t" . '->toArray()' );
-        array_splice( $code, 24 + 32, 0, "\t\t\t" . ');' );
-        array_splice( $code, 24 + 33, 0, "\t\t" . '}' );
+            array_splice( $code, 12 + 0, 0, "\t" . 'const UNKNOWN_ERROR = 1;');
+            array_splice( $code, 12 + 1, 0, "\t" . 'const MODELNOTFOUND_ERROR = 2;');
+            array_splice( $code, 12 + 2, 0, "\t" . 'const VALIDATION_ERROR = -1;');
+
+            $code[24] = "\t\t" . '$output = $next($request);';
+            
+            array_splice( $code, 24 + 1, 0, "\t\t" . '' );
+            array_splice( $code, 24 + 2, 0, "\t\t" . 'try {' );
+            array_splice( $code, 24 + 3, 0, "\t\t\t" . 'if( ! is_null( $output->exception ) ) {' );
+            array_splice( $code, 24 + 4, 0, "\t\t\t\t" . 'throw new $output->exception;' );
+            array_splice( $code, 24 + 5, 0, "\t\t\t" . '}' );
+            array_splice( $code, 24 + 6, 0, "\t\t\t" . '' );
+            array_splice( $code, 24 + 7, 0, "\t\t\t" . 'return $output;' );
+            array_splice( $code, 24 + 8, 0, "\t\t" . '}' );
+            array_splice( $code, 24 + 9, 0, "\t\t" . 'catch( ValidationException $e ) {' );
+            array_splice( $code, 24 + 10, 0, "\t\t\t" . 'return response()->json(' );
+            array_splice( $code, 24 + 11, 0, "\t\t\t\t" . 'JUR::fail()' );
+            array_splice( $code, 24 + 12, 0, "\t\t\t\t" . '->code( self::VALIDATION_ERROR )' );
+            array_splice( $code, 24 + 13, 0, "\t\t\t\t" . '->message( $e->getMessage() )' );
+            array_splice( $code, 24 + 14, 0, "\t\t\t\t" . '->resolved()' );
+            array_splice( $code, 24 + 15, 0, "\t\t\t\t" . '->toArray()' );
+            array_splice( $code, 24 + 16, 0, "\t\t\t" . ');' );
+            array_splice( $code, 24 + 17, 0, "\t\t" . '}' );
+            array_splice( $code, 24 + 18, 0, "\t\t" . 'catch( ModelNotFoundException $e ) {' );
+            array_splice( $code, 24 + 19, 0, "\t\t\t" . 'return response()->json(' );
+            array_splice( $code, 24 + 20, 0, "\t\t\t\t" . 'JUR::error()' );
+            array_splice( $code, 24 + 21, 0, "\t\t\t\t\t" . '->code( self::MODELNOTFOUND_ERROR )' );
+            array_splice( $code, 24 + 22, 0, "\t\t\t\t\t" . '->resolved()' );
+            array_splice( $code, 24 + 23, 0, "\t\t\t\t\t" . '->toArray()' );
+            array_splice( $code, 24 + 24, 0, "\t\t\t" . ');' );
+            array_splice( $code, 24 + 25, 0, "\t\t" . '}' );
+            array_splice( $code, 24 + 26, 0, "\t\t" . 'catch( \Exception $e ) {' );
+            array_splice( $code, 24 + 27, 0, "\t\t\t" . 'return response()->json(' );
+            array_splice( $code, 24 + 28, 0, "\t\t\t\t" . 'JUR::error()' );
+            array_splice( $code, 24 + 29, 0, "\t\t\t\t\t" . '->code( self::UNKNOWN_ERROR )' );
+            array_splice( $code, 24 + 30, 0, "\t\t\t\t\t" . '->resolved()' );
+            array_splice( $code, 24 + 31, 0, "\t\t\t\t\t" . '->toArray()' );
+            array_splice( $code, 24 + 32, 0, "\t\t\t" . ');' );
+            array_splice( $code, 24 + 33, 0, "\t\t" . '}' );
+        }
+        else {
+            $code[20] = "\t\t" . '$output = $next($request);';
+
+            array_splice( $code, 21 + 0, 0, "\t\t" . '' );
+            array_splice( $code, 21 + 1, 0, "\t\t" . 'try {' );
+            array_splice( $code, 21 + 2, 0, "\t\t\t" . 'if( ! is_null( $output->exception ) ) {' );
+            array_splice( $code, 21 + 3, 0, "\t\t\t\t" . 'throw new $output->exception;' );
+            array_splice( $code, 21 + 4, 0, "\t\t\t" . '}' );
+            array_splice( $code, 21 + 5, 0, "\t\t\t" . '' );
+            array_splice( $code, 21 + 6, 0, "\t\t\t" . 'return $output;' );
+            array_splice( $code, 21 + 7, 0, "\t\t" . '}' );
+            array_splice( $code, 21 + 8, 0, "\t\t" . 'catch( ValidationException $e ) {' );
+            array_splice( $code, 21 + 9, 0, "\t\t\t" . 'return response()->json( $e->getMessage() );' );
+            array_splice( $code, 21 + 10, 0, "\t\t" . '}' );
+            array_splice( $code, 21 + 11, 0, "\t\t" . 'catch( ModelNotFoundException $e ) {' );
+            array_splice( $code, 21 + 12, 0, "\t\t\t" . "return response()->json('the resource could not be found or has been removed');" );
+            array_splice( $code, 21 + 13, 0, "\t\t" . '}' );
+            array_splice( $code, 21 + 14, 0, "\t\t" . 'catch( \Exception $e ) {' );
+            array_splice( $code, 21 + 15, 0, "\t\t\t" . "return response()->json('the request could not be processed');" );
+            array_splice( $code, 21 + 16, 0, "\t\t" . '}' );
+        }        
 
         /**
          * File existence checkings
@@ -422,133 +473,44 @@ class ApiGeneratorCommand extends Command
         $name = $this->tableName();
 
         $code = $this->getControllerCodeToArray();
-        
+
         /**
-         * index
+         * Uses
          */
-        $code[16 - 1] = "\t\t" . 'try {';
-
-        array_splice($code, 16 + 0, 0, "\t\t\t" . '$' . $name . 'List = \\App\\' . $modelName . '::all();');
-        array_splice($code, 16 + 1, 0, "\t\t\t" . '');
-        if( $this->option('consistent') ) {
-            array_splice($code, 16 + 2, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( ' . '$' . $name . 'List )->success()->toArray();');
-        }
-        else {
-            array_splice($code, 16 + 2, 0, "\t\t\t" . 'return $' . $name . 'List;');
-        }
-        array_splice($code, 16 + 3, 0, "\t\t" . '}');
-        array_splice($code, 16 + 4, 0, "\t\t" . 'catch( \\Exception $e ) {');
-        if( $this->option('consistent') ) {
-            array_splice($code, 16 + 5, 0, "\t\t\t" . "return \\Khalyomede\\JSun::message('An error occured while fetching the data')->error()->toArray();");
-        }
-        else {
-            array_splice($code, 16 + 5, 0, "\t\t\t" . "return [];");
-        }
-        
-        array_splice($code, 16 + 6, 0, "\t\t" . '}');
+        array_splice( $code, (6 - 1) + 0, 0, 'use Khalyomede\JUR;' );
+        array_splice( $code, (6 - 1) + 1, 0, 'use App\\' . $modelName . ';' );
         
         /**
-         * store
+         * Index
          */
-        $code[44 - 1] = "\t\t" . 'try {';
+        if( $this->option('consistent') ) {
 
-        array_splice($code, 44 + 0, 0, "\t\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( \\App\\' . $modelName . '::create( $request->input() )->id );');
-        array_splice($code, 44 + 1, 0, "\t\t\t" . '');
-        if( $this->option('consistent') ) {
-            array_splice($code, 44 + 2, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( $' . $name . ' )->success()->toArray();' );    
         }
         else {
-            array_splice($code, 44 + 2, 0, "\t\t\t" . 'return $' . $name . ';' );
-        }            
-        array_splice($code, 44 + 3, 0, "\t\t" . '}');
-        array_splice($code, 44 + 4, 0, "\t\t" . 'catch( \\Exception $e ) {');
-        if( $this->option('consistent') ) {
-            array_splice($code, 44 + 5, 0, "\t\t\t" . "return \\Khalyomede\\JSun::message('An error occured while fetching the data')->error()->toArray();");
+            $code[ 18 - 1 ] = "\t\t" . 'return ' . $modelName . '::all();';
         }
-        else {
-            array_splice($code, 44 + 5, 0, "\t\t\t" . "return [];");
-        }        
-        array_splice($code, 44 + 6, 0, "\t\t" . '}');
-        
-        /**
-         * show
-         */        
-        $code[62 - 1] = "\t\t" . 'try {';
 
-        array_splice( $code, 62 + 0, 0, "\t\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );' );
-        array_splice( $code, 62 + 1, 0, "\t\t\t" . '' );
-        if( $this->option('consistent') ) {
-            array_splice( $code, 62 + 2, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( $' . $name . ' )->success()->toArray();' );
-        }
-        else {
-            array_splice( $code, 62 + 2, 0, "\t\t\t" . 'return $' . $name . ';' );       
-        }        
-        array_splice( $code, 62 + 3, 0, "\t\t" . '}' );
-        array_splice( $code, 62 + 4, 0, "\t\t" . 'catch( \\Exception $e ) {' );
-        if( $this->option('consistent') ) {
-            array_splice( $code, 62 + 5, 0, "\t\t\t" . "return \Khalyomede\JSun::message('An error occured while fetching the data')->error()->toArray();" );
-        }
-        else {
-            array_splice( $code, 62 + 5, 0, "\t\t\t" . "return [];" );
-        }        
-        array_splice( $code, 62 + 6, 0, "\t\t" . "}" );
-        
         /**
-         * update
-         */     
-        $code[92 - 1] = "\t\t" . 'try {';
-        
-        array_splice( $code, 92 + 0, 0, "\t\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );' );
-        array_splice( $code, 92 + 1, 0, "\t\t\t" . '' );
-        array_splice( $code, 92 + 2, 0, "\t\t\t" . 'foreach( $request->input() as $key => $value ) {' );
-        array_splice( $code, 92 + 3, 0, "\t\t\t\t" . '$' . $name . '->{ $key } = $value;' );
-        array_splice( $code, 92 + 4, 0, "\t\t\t" . '}' );
-        array_splice( $code, 92 + 5, 0, "\t\t\t" . '' );
-        array_splice( $code, 92 + 6, 0, "\t\t\t" . '$' . $name . '->save();' );
-        array_splice( $code, 92 + 7, 0, "\t\t\t" . '' );
-        array_splice( $code, 92 + 8, 0, "\t\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );' );
-        array_splice( $code, 92 + 9, 0, "\t\t\t" . '' );
-        if( $this->option('consistent') ) {
-            array_splice( $code, 92 + 10, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( $' . $name . ' )->success()->toArray();' );    
-        }
-        else {
-            array_splice( $code, 92 + 10, 0, "\t\t\t" . 'return $' . $name . ';' );
-        }        
-        array_splice( $code, 92 + 11, 0, "\t\t" . '}' );
-        array_splice( $code, 92 + 12, 0, "\t\t" . 'catch( \\Exception $e ) {' );
-        if( $this->option('consistent') ) {
-            array_splice( $code, 92 + 13, 0, "\t\t\t" . "return \Khalyomede\JSun::message('An error occured while fetching the data')->error()->toArray();" );
-        }
-        else {
-            array_splice( $code, 92 + 13, 0, "\t\t\t" . "return [];" );
-        }        
-        array_splice( $code, 92 + 14, 0, "\t\t" . "}" );  
-        
-        /**
-         * delete
+         * Show
          */
-        
-        $code[118 - 1] = "\t\t" . 'try {';
+        if( $this->option('consistent') ) {
 
-        array_splice( $code, 118 + 0, 0, "\t\t\t" . '$' . $name . ' = \\App\\' . $modelName . '::findOrFail( $id );' );
-        array_splice( $code, 118 + 1, 0, "\t\t\t" . '' );
-        array_splice( $code, 118 + 2, 0, "\t\t\t" . '$' . $name . '->delete();' );
-        array_splice( $code, 118 + 3, 0, "\t\t\t" . '' );
-        if( $this->option('consistent') ) {
-            array_splice( $code, 118 + 4, 0, "\t\t\t" . 'return \\Khalyomede\\JSun::data( $' . $name . ' )->success()->toArray();' );    
         }
         else {
-            array_splice( $code, 118 + 4, 0, "\t\t\t" . 'return $' . $name . ';' );
-        }        
-        array_splice( $code, 118 + 5, 0, "\t\t" . '}' );
-        array_splice( $code, 118 + 6, 0, "\t\t" . 'catch( \\Exception $e ) {' );
-        if( $this->option('consistent') ) {
-            array_splice( $code, 118 + 7, 0, "\t\t\t" . "return \Khalyomede\JSun::message('An error occured while fetching the data')->error()->toArray();" );    
+            
         }
-        else {
-            array_splice( $code, 118 + 7, 0, "\t\t\t" . "return [];" );
-        }        
-        array_splice( $code, 118 + 8, 0, "\t\t" . "}" );
+
+        /**
+         * Store
+         */
+
+        /**
+         * Update
+         */
+
+        /**
+         * Delete
+         */
 
         file_put_contents( $this->controllerPath(), implode( $code, "\n" ) );
     }
@@ -606,7 +568,7 @@ class ApiGeneratorCommand extends Command
         $controllerName = $this->controllerName();
 
         array_splice( $code, $lastLine + 1, 0, '' );
-        array_splice( $code, $lastLine + 2, 0, "Route::resource('/$name', '" . $controllerName . "');" );
+        array_splice( $code, $lastLine + 2, 0, "\tRoute::resource('/$name', '" . $controllerName . "');" );
 
         $routesPath = $this->routesPath();
 
