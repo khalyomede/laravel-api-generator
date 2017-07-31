@@ -475,42 +475,126 @@ class ApiGeneratorCommand extends Command
         $code = $this->getControllerCodeToArray();
 
         /**
-         * Uses
+         * Dependencies
          */
-        array_splice( $code, (6 - 1) + 0, 0, 'use Khalyomede\JUR;' );
-        array_splice( $code, (6 - 1) + 1, 0, 'use App\\' . $modelName . ';' );
+        if( $this->option('consistent') ) {
+            array_splice( $code, (6 - 1) + 0, 0, 'use Khalyomede\JUR;' );
+            array_splice( $code, (6 - 1) + 1, 0, 'use App\\' . $modelName . ';' );
+        }
+        else {
+            array_splice( $code, (6 - 1) + 0, 0, 'use App\\' . $modelName . ';' );
+        }
         
         /**
          * Index
          */
         if( $this->option('consistent') ) {
+            $code[ 18 - 1 ] = "\t\t" . 'return JUR::reset()';
 
+            array_splice( $code, 18 + 0, 0, "\t\t\t" . '->requested()' );
+            array_splice( $code, 18 + 1, 0, "\t\t\t" . '->get()' );
+            array_splice( $code, 18 + 2, 0, "\t\t\t" . '->data( ' . $modelName . '::all() )' );
+            array_splice( $code, 18 + 3, 0, "\t\t\t" . '->success()' );
+            array_splice( $code, 18 + 4, 0, "\t\t\t" . '->resolved()' );
+            array_splice( $code, 18 + 5, 0, "\t\t\t" . '->toArray();' );
         }
         else {
-            $code[ 18 - 1 ] = "\t\t" . 'return ' . $modelName . '::all();';
+            $code[ 17 - 1 ] = "\t\t" . 'return ' . $modelName . '::all();';
+        }
+
+        /**
+         * Store
+         */
+        if( $this->option('consistent') ) {
+            $code[ 45 - 1 ] = "\t\t" . 'return JUR::reset()';
+
+            array_splice( $code, 45 + 0, 0, "\t\t\t" . '->requested()' );
+            array_splice( $code, 45 + 1, 0, "\t\t\t" . '->post()' );
+            array_splice( $code, 45 + 2, 0, "\t\t\t" . '->data( ' . $modelName . '::findOrFail( ' . $modelName . '::create( $request->input() )->id ) )' );
+            array_splice( $code, 45 + 3, 0, "\t\t\t" . '->success()' );
+            array_splice( $code, 45 + 4, 0, "\t\t\t" . '->resolved()' );
+            array_splice( $code, 45 + 5, 0, "\t\t\t" . '->toArray();' );
+        }
+        else {
+            $code[ 38 - 1 ] = "\t\t" . 'return ' . $modelName . '::findOrFail( ' . $modelName . '::create( $request->input() )->id );';
         }
 
         /**
          * Show
          */
         if( $this->option('consistent') ) {
+            $code[ 62 - 1 ] = "\t\t" . 'return JUR::reset()';
 
+            array_splice( $code, 62 + 0, 0, "\t\t\t" . '->requested()' );
+            array_splice( $code, 62 + 1, 0, "\t\t\t" . '->get()' );
+            array_splice( $code, 62 + 2, 0, "\t\t\t" . '->data( ' . $modelName . '::findOrFail( $id ) )' );
+            array_splice( $code, 62 + 3, 0, "\t\t\t" . '->success()' );
+            array_splice( $code, 62 + 4, 0, "\t\t\t" . '->resolved()' );
+            array_splice( $code, 62 + 5, 0, "\t\t\t" . '->toArray();' );
         }
         else {
-            
+            $code[ 49 - 1 ] = "\t\t" . 'return ' . $modelName . '::findOrFail( $id );';
         }
-
-        /**
-         * Store
-         */
 
         /**
          * Update
          */
+        if( $this->option('consistent') ) {
+            $code[ 91 - 1 ] = "\t\t" . '$' . $name . ' = ' . $modelName . '::findOrFail( $id );';
+
+            array_splice( $code, 91 + 0, 0, "\t\t" . '' );
+            array_splice( $code, 91 + 1, 0, "\t\t" . 'foreach( $request->input() as $key => $value ) {' );
+            array_splice( $code, 91 + 2, 0, "\t\t\t" . '$' . $name . '->{ $key } = $value;' );
+            array_splice( $code, 91 + 3, 0, "\t\t" . '}' );
+            array_splice( $code, 91 + 4, 0, "\t\t" . '' );
+            array_splice( $code, 91 + 5, 0, "\t\t" . '$' . $name . '->save();' );
+            array_splice( $code, 91 + 6, 0, "\t\t" . '' );
+            array_splice( $code, 91 + 7, 0, "\t\t" . 'return JUR::reset()' );
+            array_splice( $code, 91 + 8, 0, "\t\t\t" . '->requested()' );
+            array_splice( $code, 91 + 9, 0, "\t\t\t" . '->put()' );
+            array_splice( $code, 91 + 10, 0, "\t\t\t" . '->data( ' . $modelName . '::findOrFail( $id ) )' );
+            array_splice( $code, 91 + 11, 0, "\t\t\t" . '->success()' );
+            array_splice( $code, 91 + 12, 0, "\t\t\t" . '->resolved()' );
+            array_splice( $code, 91 + 13, 0, "\t\t\t" . '->toArray();' );
+        }
+        else {
+            $code[ 72 - 1 ] = "\t\t" . '$' . $name . ' = ' . $modelName . '::findOrFail( $id );';
+
+            array_splice( $code, 72 + 0, 0, "\t\t" . '' );
+            array_splice( $code, 72 + 1, 0, "\t\t" . 'foreach( $request->input() as $key => $value ) {' );
+            array_splice( $code, 72 + 2, 0, "\t\t\t" . '$' . $name . '->{ $key } = $value;' );
+            array_splice( $code, 72 + 3, 0, "\t\t" . '}' );
+            array_splice( $code, 72 + 4, 0, "\t\t" . '' );
+            array_splice( $code, 72 + 5, 0, "\t\t" . '$' . $name . '->save();' );
+            array_splice( $code, 72 + 6, 0, "\t\t" . '' );
+            array_splice( $code, 72 + 7, 0, "\t\t" . 'return ' . $modelName . '::findOrFail( $id );' );
+        }
 
         /**
          * Delete
          */
+        if( $this->option('consistent') ) {
+            $code[ 116 - 1 ] = "\t\t" . '$' . $name . ' = ' . $modelName . '::findOrFail( $id );';
+
+            array_splice( $code, 116 + 0, 0, "\t\t" . '' );
+            array_splice( $code, 116 + 1, 0, "\t\t" . '$' . $name . '->delete();' );
+            array_splice( $code, 116 + 2, 0, "\t\t" . '' );
+            array_splice( $code, 116 + 3, 0, "\t\t" . 'return JUR::reset()' );
+            array_splice( $code, 116 + 4, 0, "\t\t\t" . '->requested()' );
+            array_splice( $code, 116 + 5, 0, "\t\t\t" . '->delete()' );
+            array_splice( $code, 116 + 6, 0, "\t\t\t" . '->data( $' . $name . ' )' );
+            array_splice( $code, 116 + 7, 0, "\t\t\t" . '->success()' );
+            array_splice( $code, 116 + 8, 0, "\t\t\t" . '->resolved()' );
+            array_splice( $code, 116 + 9, 0, "\t\t\t" . '->toArray();' );
+        }
+        else {
+            $code[ 91 - 1 ] = "\t\t" . '$' . $name . ' = ' . $modelName . '::findOrFail( $id );';
+
+            array_splice( $code, 91 + 0, 0, "\t\t" . '' );
+            array_splice( $code, 91 + 1, 0, "\t\t" . '$' . $name . '->delete();' );
+            array_splice( $code, 91 + 2, 0, "\t\t" . '' );
+            array_splice( $code, 91 + 3, 0, "\t\t" . 'return $' . $name . ';' );
+        }
 
         file_put_contents( $this->controllerPath(), implode( $code, "\n" ) );
     }
