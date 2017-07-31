@@ -18,7 +18,7 @@ class ApiGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'api:generate {--table= : Coma separated list of tables you only want to expose} {--noTable= : Coma separated list of tables you want to exclude from the exposed tables} {--prefix= : String to remove for each exposed tables} {--noCol= : Coma separated list of table followed by a dot and the name of the column name you do not want to expose through GET methods} {--fake= : Number of rows to add to the fake data inserted in the exposed tables} {--consistent : Specify this option if you want to retrieve your resources in a consistent way (for more information browse github package khalyomede/jsun-php)}';
+    protected $signature = 'api:generate {--table= : Coma separated list of tables you only want to expose} {--noTable= : Coma separated list of tables you want to exclude from the exposed tables} {--prefix= : String to remove for each exposed tables} {--noCol= : Coma separated list of table followed by a dot and the name of the column name you do not want to expose through GET methods} {--fake= : Number of rows to add to the fake data inserted in the exposed tables} {--uniform : Specify this option if you want to retrieve your resources in a consistent way (for more information browse github package khalyomede/php-jur)}';
 
     /**
      * The console command description.
@@ -131,7 +131,7 @@ class ApiGeneratorCommand extends Command
         array_splice( $code, 5 + 1, 0, "use Illuminate\Validation\ValidationException;" );
         array_splice( $code, 5 + 2, 0, "use Exception;" );
 
-        if( $this->option('consistent') ) {           
+        if( $this->option('uniform') ) {           
             array_splice( $code, 5 + 3, 0, "use Khalyomede\JUR;" );
 
             array_splice( $code, 12 + 0, 0, "\t" . 'const UNKNOWN_ERROR = 1;');
@@ -477,7 +477,7 @@ class ApiGeneratorCommand extends Command
         /**
          * Dependencies
          */
-        if( $this->option('consistent') ) {
+        if( $this->option('uniform') ) {
             array_splice( $code, (6 - 1) + 0, 0, 'use Khalyomede\JUR;' );
             array_splice( $code, (6 - 1) + 1, 0, 'use App\\' . $modelName . ';' );
         }
@@ -488,7 +488,7 @@ class ApiGeneratorCommand extends Command
         /**
          * Index
          */
-        if( $this->option('consistent') ) {
+        if( $this->option('uniform') ) {
             $code[ 18 - 1 ] = "\t\t" . 'return JUR::reset()';
 
             array_splice( $code, 18 + 0, 0, "\t\t\t" . '->requested()' );
@@ -505,7 +505,7 @@ class ApiGeneratorCommand extends Command
         /**
          * Store
          */
-        if( $this->option('consistent') ) {
+        if( $this->option('uniform') ) {
             $code[ 45 - 1 ] = "\t\t" . 'return JUR::reset()';
 
             array_splice( $code, 45 + 0, 0, "\t\t\t" . '->requested()' );
@@ -522,7 +522,7 @@ class ApiGeneratorCommand extends Command
         /**
          * Show
          */
-        if( $this->option('consistent') ) {
+        if( $this->option('uniform') ) {
             $code[ 62 - 1 ] = "\t\t" . 'return JUR::reset()';
 
             array_splice( $code, 62 + 0, 0, "\t\t\t" . '->requested()' );
@@ -539,7 +539,7 @@ class ApiGeneratorCommand extends Command
         /**
          * Update
          */
-        if( $this->option('consistent') ) {
+        if( $this->option('uniform') ) {
             $code[ 91 - 1 ] = "\t\t" . '$' . $name . ' = ' . $modelName . '::findOrFail( $id );';
 
             array_splice( $code, 91 + 0, 0, "\t\t" . '' );
@@ -573,7 +573,7 @@ class ApiGeneratorCommand extends Command
         /**
          * Delete
          */
-        if( $this->option('consistent') ) {
+        if( $this->option('uniform') ) {
             $code[ 116 - 1 ] = "\t\t" . '$' . $name . ' = ' . $modelName . '::findOrFail( $id );';
 
             array_splice( $code, 116 + 0, 0, "\t\t" . '' );

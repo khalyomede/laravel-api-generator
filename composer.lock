@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "59f2e268d172883941f8d4b48f36ec47",
+    "content-hash": "6d77c2c6d17442cfd13ebc6c4a39cbfa",
     "packages": [
         {
-            "name": "khalyomede/jsun-php",
-            "version": "v1.0.1",
+            "name": "khalyomede/php-jur",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/khalyomede/jsun-php.git",
-                "reference": "e88b8430dc59f9a64e3e8868d7304045f6c24b6d"
+                "url": "https://github.com/khalyomede/php-jur.git",
+                "reference": "b3805f4d06ef8d6b2361f9454272d5b13ff66ccd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/khalyomede/jsun-php/zipball/e88b8430dc59f9a64e3e8868d7304045f6c24b6d",
-                "reference": "e88b8430dc59f9a64e3e8868d7304045f6c24b6d",
+                "url": "https://api.github.com/repos/khalyomede/php-jur/zipball/b3805f4d06ef8d6b2361f9454272d5b13ff66ccd",
+                "reference": "b3805f4d06ef8d6b2361f9454272d5b13ff66ccd",
                 "shasum": ""
             },
             "require": {
@@ -33,8 +33,14 @@
             "license": [
                 "MIT"
             ],
-            "description": "My personnal JSON formatting pattern for dealing equally with success, errors, or fail status when send and retrieving JSON data",
-            "time": "2017-07-27T15:58:02+00:00"
+            "authors": [
+                {
+                    "name": "Khalyomede",
+                    "email": "an@port-adhoc.com"
+                }
+            ],
+            "description": "PHP class that follows the JSON Uniform Response standard",
+            "time": "2017-07-30T09:00:46+00:00"
         }
     ],
     "packages-dev": [],
