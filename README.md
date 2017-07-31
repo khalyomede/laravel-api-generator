@@ -168,7 +168,7 @@ This will genrate all the necessary files to build the API, and will creates 10 
 ## Example of usage 7 : uniform JSON responses
 This will use [JSON Uniform Response](https://github.com/khalyomede/jur) standard to let you retrieve your resources in a consistent way. For each response, instead of a classic resource displaying when getting, updating, inserting or deleting a resource.
 ```bash
-php artisan api:generate --consistent
+php artisan api:generate --uniform
 ```
 For instance, in the GET (index) method, instead of getting response like :
 ```
