@@ -70,6 +70,8 @@ class ApiGeneratorCommand extends Command
 
         $this->checkIfTablesExist();
 
+        $this->cleanPreviousRoutes();
+
         $this->openRouteGroup();
 
         foreach( $this->tables as $this->table ) {
@@ -79,13 +81,32 @@ class ApiGeneratorCommand extends Command
         $this->closeRouteGroup();
     }
 
+    private function cleanPreviousRoutes() {
+        $code = $this->getRouteCodeToString();
+
+        $code = preg_replace( '/\/\*\*\n\s\*\s@author\sKhalyomede\\\ApiGenerator.*\*\//s', '', $code );
+
+        if( ! file_exists( $this->routesPath() ) ) {
+            die( $this->routesPath() . ' does not exists' );
+        }
+        else if( ! is_writable( $this->routesPath() ) ) {
+            die( $this->routesPath() . ' is already opened in another program' );
+        }
+
+        file_put_contents( $this->routesPath(), $code );
+    }
+
     private function openRouteGroup() {
         $code = $this->getRouteCodeToArray();
 
         $lastLine = count($code);
 
-        array_splice( $code, $lastLine + 0, 0, '' );
-        array_splice( $code, $lastLine + 1, 0, "Route::group(['middleware' => \App\Http\Middleware\ExceptionHandlerMiddleware::class], function() {" );
+        array_splice( $code, $lastLine + 0, 0, '/**' );
+        array_splice( $code, $lastLine + 1, 0, ' * @author Khalyomede\ApiGenerator' );
+        array_splice( $code, $lastLine + 2, 0, ' *' );
+        array_splice( $code, $lastLine + 3, 0, ' * Please do not alter this comment bloc or the content inside' );
+        array_splice( $code, $lastLine + 4, 0, ' */' );
+        array_splice( $code, $lastLine + 5, 0, "Route::group(['middleware' => \App\Http\Middleware\ExceptionHandlerMiddleware::class], function() {" );
 
         $routesPath = $this->routesPath();
 
@@ -97,7 +118,12 @@ class ApiGeneratorCommand extends Command
 
         $lastLine = count($code);
 
-        array_splice( $code, $lastLine, 0, "});" );
+        array_splice( $code, $lastLine + 0, 0, '});');
+        array_splice( $code, $lastLine + 1, 0, '/**' );
+        array_splice( $code, $lastLine + 2, 0, ' * End of auto-generation' );
+        array_splice( $code, $lastLine + 3, 0, ' *' );
+        array_splice( $code, $lastLine + 4, 0, ' * Please do no alter this comment bloc or the content inside' );
+        array_splice( $code, $lastLine + 5, 0, ' */' );
 
         $routesPath = $this->routesPath();
 
@@ -630,8 +656,12 @@ class ApiGeneratorCommand extends Command
         return base_path('routes/' . $this->routesName() . '.php' );
     }
 
+    private function getRouteCodeToString() {
+        return file_get_contents( $this->routesPath() );
+    }
+
     private function getRouteCodeToArray() {
-        return explode("\n", file_get_contents( $this->routesPath() ) );
+        return explode("\n", $this->getRouteCodeToString() );
     }
 
     private function tableName() {
