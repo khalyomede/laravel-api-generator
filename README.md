@@ -43,9 +43,10 @@ This library has been made possible with the help of Services Providers. Laravel
 - Can fill your tables if you need some fake data *>= **0.5.0***
 - Always returns a JSON response, no matter it is a success or a database outage, ... *>= **0.10.0***
 - Can provide consistent JSON responses instead of just returning the resource *>= **0.11.0***
+- Log every errors, database outage, validation errors *>= **0.13.0***
 
 ## Next features
-- Can log everything, including errors, database outage, ...
+
 - Creates your relationships according to your tables foreign keys
 - Can specify which tables you want to fill with fake data
 - Can specify which tables you do not want to fill with fake data
