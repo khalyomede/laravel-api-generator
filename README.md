@@ -166,7 +166,7 @@ This will genrate all the necessary files to build the API, and will creates 10 
 
 [back to the example list](#list-of-examples)
 ## Example of usage 7 : uniform JSON responses
-This will use [JSON Uiform Response](https://github.com/khalyomede/jur) standard to let you retrieve your resources in a consistent way. For each response, instead of a classic resource displaying when getting, updating, inserting or deleting a resource.
+This will use [JSON Uniform Response](https://github.com/khalyomede/jur) standard to let you retrieve your resources in a consistent way. For each response, instead of a classic resource displaying when getting, updating, inserting or deleting a resource.
 ```bash
 php artisan api:generate --consistent
 ```
@@ -203,7 +203,7 @@ You will get :
   ]
 }
 ```
-So as you can see each response will be filled with with a lot of attributes. The advantage is that no matter the HTTP protocol you use, this response will be shaped like this. Only the values will change (wether it is a database outage, a constraint error or a success). For more information and available value for those attributes, browse [JSON Uiform Response](https://github.com/khalyomede/jur) or if you curious to see how this is implemented in PHP available : [khalyomede/php-jur](https://github.com/khalyomede/php-jur).
+So as you can see each response will be filled with with a lot of attributes. The advantage is that no matter the HTTP protocol you use, this response will be shaped like this. Only the values will change (wether it is a database outage, a constraint error or a success). For more information and available value for those attributes, browse [JSON Uniform Response](https://github.com/khalyomede/jur) or if you curious to see how this is implemented in PHP available : [khalyomede/php-jur](https://github.com/khalyomede/php-jur).
 
 [back to the example list](#list-of-examples)
 ## Help documentation
