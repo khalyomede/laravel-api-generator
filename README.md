@@ -46,7 +46,6 @@ This library has been made possible with the help of Services Providers. Laravel
 - Log every errors, database outage, validation errors *>= **0.13.0***
 
 ## Next features
-
 - Creates your relationships according to your tables foreign keys
 - Can specify which tables you want to fill with fake data
 - Can specify which tables you do not want to fill with fake data
