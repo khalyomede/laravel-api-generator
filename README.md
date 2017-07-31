@@ -115,6 +115,8 @@ php artisan api:generate
 ```
 *Result :* this will create, for each tables in your database, a corresponding model, controller, and routes.
 
+*Quick start :* `php artisan api:generate && php artisan serve`
+
 [back to the example list](#list-of-examples)
 ## Example of usage 2 : white-listing your prefered tables
 This will only try build the API for the filtered tables. Note that it is a white-list, so only the specifyied table will be exposed to the API.
@@ -124,6 +126,8 @@ php artisan api:generate --table=user,post
 *Result :* this will create the model, controller and routes only for the table `user` and `post` in this case.
 
 **Note :** If you specify a table that does not exists in your database, this will throw an error.
+
+*Quick start :* `php artisan api:generate --table=user,post && php artisan serve`
 
 [back to the example list](#list-of-examples)
 ## Example of usage 3 : black listing the tables you dont want to expose
@@ -137,6 +141,8 @@ If the full table list contains `user`, `post`, `address`, and `country`, only t
 
 **Note :** If you specify a table that does not exists in your database, this will throw an error.
 
+*Quick start :* `php artisan api:generate --noTable=user,post && php artisan serve`
+
 [back to the example list](#list-of-examples)
 ## Example of usage 4 : removing a prefix for each of the table exposed
 This removes, from all table name, the word specifyied at the begining of your tables names. This can be useful if for example you are using a third-party system like Wordpress that will add some prefix to your table, but you prefer to keep it readable when asking your API some resources. 
@@ -146,6 +152,8 @@ php artisan api:generate --prefix=wp_
 *Result :* this will removing the word at the begining of each tables, so each of the related models, controllers, and routes will be cleaned in consequence.
 
 **Note :** If your tables do not begins with the word, this will have no effects on the route name.
+
+*Quick start :* `php artisan api:generate --prefix=wp_ && php artisan serve`
 
 [back to the example list](#list-of-examples)
 ## Example of usage 5 : removing columns from some particular tables
@@ -157,6 +165,8 @@ This will expose all columns of all the tables, except for the tables `user` and
 
 **Note :** If you specify column or table that does not exists, this will have no effect on the created model and exposed column in your API.
 
+*Quick start :* `php artisan api:generate --noCol=user.password,customer.birthDate && php artisan serve`
+
 [back to the example list](#list-of-examples)
 ## Example of usage 6 : inserting fake data after the routes have been generated
 This comes really handy if you worked on your database schema but do not have data yet.
@@ -167,6 +177,8 @@ php artisan api:generate --fake=10
 This will genrate all the necessary files to build the API, and will creates 10 rows of fake data to help you begin to work with near-production API resources.
 
 *Note :* The string columns will be filled with one single sentence of Lorem Ipsum.
+
+*Quick start :* `php artisan api:generate --fake=10 && php artisan serve`
 
 [back to the example list](#list-of-examples)
 ## Example of usage 7 : uniform JSON responses
@@ -206,6 +218,8 @@ You will get :
 }
 ```
 So as you can see each response will be filled with with a lot of attributes. The advantage is that no matter the HTTP protocol you use, this response will be shaped like this. Only the values will change (wether it is a database outage, a constraint error or a success). For more information and available value for those attributes, browse [JSON Uniform Response](https://github.com/khalyomede/jur) or if you curious to see how this is implemented in PHP available : [khalyomede/php-jur](https://github.com/khalyomede/php-jur).
+
+*Quick start :* `php artisan api:generate --uniform && php artisan serve`
 
 [back to the example list](#list-of-examples)
 ## Help documentation
