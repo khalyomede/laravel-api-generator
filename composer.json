@@ -4,10 +4,11 @@
     "type": "library",
     "license": "MIT",
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
     	"php": ">=5.3.0",
         "khalyomede/php-jur": "1.*",
-        "doctrine/dbal": "2.5.x-dev"
+        "doctrine/dbal": "^2.5"
     },
     "autoload": {
     	"psr-4": {
