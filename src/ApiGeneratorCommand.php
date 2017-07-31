@@ -17,7 +17,7 @@ class ApiGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'api:generate {--table= : Coma separated list of tables you only want to expose} {--noTable= : Coma separated list of tables you want to exclude from the exposed tables} {--prefix= : String to remove for each exposed tables} {--noCol= : Coma separated list of table followed by a dot and the name of the column name you do not want to expose through GET methods} {--fake= : Number of rows to add to the fake data inserted in the exposed tables} {--uniform : Specify this option if you want to retrieve your resources in a consistent way (for more information browse github package khalyomede/php-jur)}';
+    protected $signature = 'api:generate {--table= : Coma separated list of tables you only want to expose} {--noTable= : Coma separated list of tables you want to exclude from the exposed tables} {--prefix= : String to remove for each exposed tables} {--noCol= : Coma separated list of table followed by a dot and the name of the column name you do not want to expose through GET methods} {--fake= : Number of rows to add to the fake data inserted in the exposed tables} {--uniform : Specify this option if you want to retrieve your resources in a consistent way (for more information browse github package khalyomede/php-jur)} {--log : If specifyied, Laravel will also log every access or error for your API in /storage/logs/laravel.log}';
 
     /**
      * The console command description.
