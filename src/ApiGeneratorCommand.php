@@ -4,7 +4,6 @@ namespace Khalyomede\ApiGenerator;
 
 use Illuminate\Console\Command;
 use Faker\Factory as Faker;
-use Khalyomede\Jsun as Response;
 use Exception;
 use DB;
 
