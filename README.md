@@ -95,6 +95,10 @@ Available commands:
 ```
 Last thing to check is that your `.env` file is well configured. When everything is okay, you are ready to get started !
 
+## WARNINGS
+- This library expect you do not have any middleware called `ExceptionHandlerMiddleware`. If so, please take a moment to rename it as it will be replaced.
+- This library will erase you model relative to the options you choose. For example, if you choose the basic option, if you had a table named `post`, the related model named `Post`, controller `PostController` will be replaced. Use with caution and save any previous model/controller work before.
+
 ## List of examples
 - [Example of usage 1 : basic usage](#example-of-usage-1--basic-usage)
 - [Example of usage 2 : white-listing your prefered tables](#example-of-usage-2--white-listing-your-prefered-tables)
