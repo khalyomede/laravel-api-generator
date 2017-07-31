@@ -191,16 +191,14 @@ You will get :
   "elapsed": 257,
   "message": "the resource have successfully been saved",
   "code": 0,
-  "data": [
-    {
-      "id": 1,
-      "firstName": "John",
-      "lastName": "Doe",
-      "birthDate": "2017-07-04",
-      "createdAt": "2017-07-28 16:47:00",
-      "updatedAt": "2017-07-28 16:47:00"
-    }
-  ]
+  "data": {
+    "id": 1,
+    "firstName": "John",
+    "lastName": "Doe",
+    "birthDate": "2017-07-04",
+    "createdAt": "2017-07-28 16:47:00",
+    "updatedAt": "2017-07-28 16:47:00"
+  }
 }
 ```
 So as you can see each response will be filled with with a lot of attributes. The advantage is that no matter the HTTP protocol you use, this response will be shaped like this. Only the values will change (wether it is a database outage, a constraint error or a success). For more information and available value for those attributes, browse [JSON Uniform Response](https://github.com/khalyomede/jur) or if you curious to see how this is implemented in PHP available : [khalyomede/php-jur](https://github.com/khalyomede/php-jur).
