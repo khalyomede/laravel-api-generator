@@ -41,8 +41,8 @@ This library has been made possible with the help of Services Providers. Laravel
 - Can remove a prefix to each of your exposed tables *>= **0.3.0***
 - Can blacklist columns of tables to improve security *>= **0.4.0***
 - Can fill your tables if you need some fake data *>= **0.5.0***
-- Can provide consistent JSON responses instead of just returning the resource *>= **0.7.0***
 - Always returns a JSON response, no matter it is a success or a database outage, ... *>= **0.10.0***
+- Can provide consistent JSON responses instead of just returning the resource *>= **0.11.0***
 
 ## Next features
 - Can log everything, including errors, database outage, ...
@@ -102,7 +102,7 @@ Last thing to check is that your `.env` file is well configured. When everything
 - [Example of usage 4 : removing a prefix for each of the table exposed](#example-of-usage-4--removing-a-prefix-for-each-of-the-table-exposed)
 - [Example of usage 5 : removing columns from some particular tables](#example-of-usage-5--removing-columns-from-some-particular-tables)
 - [Example of usage 6 : inserting fake data after the routes have been generated](#example-of-usage-6--inserting-fake-data-after-the-routes-have-been-generated)
-- [Example of usage 7 : consistent JSON responses](#example-of-usage-7--consistent-json-responses)
+- [Example of usage 7 : uniform JSON responses](#example-of-usage-7--uniform-json-responses)
 
 ## Example of usage 1 : basic usage
 This is the simplest example that scan your database to get all the table name and work from this array.
@@ -165,8 +165,8 @@ This will genrate all the necessary files to build the API, and will creates 10 
 *Note :* The string columns will be filled with one single sentence of Lorem Ipsum.
 
 [back to the example list](#list-of-examples)
-## Example of usage 7 : consistent JSON responses
-This will use JSun response standard to let you retrieve your resources in a consistent way. For each response, instead of a classic resource displaying when getting, updating, inserting or deleting a resource.
+## Example of usage 7 : uniform JSON responses
+This will use [JSON Uiform Response](https://github.com/khalyomede/jur) standard to let you retrieve your resources in a consistent way. For each response, instead of a classic resource displaying when getting, updating, inserting or deleting a resource.
 ```bash
 php artisan api:generate --consistent
 ```
@@ -177,15 +177,19 @@ For instance, in the GET (index) method, instead of getting response like :
   "firstName": "John",
   "lastName": "Doe",
   "birthDate": "2017-07-04",
-  "createdAt": "2017-07-26 00:00:00",
-  "updatedAt": "2017-07-26 00:00:00"
+  "createdAt": "2017-07-28 16:47:00",
+  "updatedAt": "2017-07-28 16:47:00"
 }
 ```
 You will get :
 ```
 {
-  "status": "success",
-  "message": "",
+  "request": "update",
+  "status": "success",  
+  "requested": 1501325303723,
+  "resolved": 1501325303980,
+  "elapsed": 257,
+  "message": "the resource have successfully been saved",
   "code": 0,
   "data": [
     {
@@ -193,13 +197,13 @@ You will get :
       "firstName": "John",
       "lastName": "Doe",
       "birthDate": "2017-07-04",
-      "createdAt": "2017-07-26 00:00:00",
-      "updatedAt": "2017-07-26 00:00:00"
+      "createdAt": "2017-07-28 16:47:00",
+      "updatedAt": "2017-07-28 16:47:00"
     }
   ]
 }
 ```
-So as you can see each response will be filled with 4 attributes : a status`status`, a `message`, a `code` and a `data` (this last is always filled with your resource(s)). For more information and available value for those attributes, browser [khalyomede/jsun-php](https://github.com/khalyomede/jsun-php).
+So as you can see each response will be filled with 4 attributes : a status`status`, a `message`, a `code` and a `data` (this last is always filled with your resource(s)). For more information and available value for those attributes, browse [JSON Uiform Response](https://github.com/khalyomede/jur) or the implementation in PHP available : [khalyomede/php-jur](https://github.com/khalyomede/php-jur).
 
 [back to the example list](#list-of-examples)
 ## Help documentation
