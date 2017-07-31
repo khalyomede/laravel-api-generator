@@ -203,7 +203,7 @@ You will get :
   ]
 }
 ```
-So as you can see each response will be filled with 4 attributes : a status`status`, a `message`, a `code` and a `data` (this last is always filled with your resource(s)). For more information and available value for those attributes, browse [JSON Uiform Response](https://github.com/khalyomede/jur) or the implementation in PHP available : [khalyomede/php-jur](https://github.com/khalyomede/php-jur).
+So as you can see each response will be filled with with a lot of attributes. The advantage is that no matter the HTTP protocol you use, this response will be shaped like this. Only the values will change (wether it is a database outage, a constraint error or a success). For more information and available value for those attributes, browse [JSON Uiform Response](https://github.com/khalyomede/jur) or if you curious to see how this is implemented in PHP available : [khalyomede/php-jur](https://github.com/khalyomede/php-jur).
 
 [back to the example list](#list-of-examples)
 ## Help documentation
