@@ -155,70 +155,179 @@ class ApiGeneratorCommand extends Command
         array_splice( $code, 5 + 0, 0, "use Illuminate\Database\Eloquent\ModelNotFoundException;" );
         array_splice( $code, 5 + 1, 0, "use Illuminate\Validation\ValidationException;" );
         array_splice( $code, 5 + 2, 0, "use Exception;" );
+        array_splice( $code, 5 + 3, 0, "use Log;" );
 
         if( $this->option('uniform') ) {           
-            array_splice( $code, 5 + 3, 0, "use Khalyomede\JUR;" );
+            array_splice( $code, 5 + 4, 0, "use Khalyomede\JUR;" );
 
-            array_splice( $code, 12 + 0, 0, "\t" . 'const UNKNOWN_ERROR = 1;');
-            array_splice( $code, 12 + 1, 0, "\t" . 'const MODELNOTFOUND_ERROR = 2;');
-            array_splice( $code, 12 + 2, 0, "\t" . 'const VALIDATION_ERROR = -1;');
+            array_splice( $code, 13 + 0, 0, "\t" . 'const UNKNOWN_ERROR = 1;');
+            array_splice( $code, 13 + 1, 0, "\t" . 'const MODELNOTFOUND_ERROR = 2;');
+            array_splice( $code, 13 + 2, 0, "\t" . 'const VALIDATION_ERROR = -1;');
 
-            $code[24] = "\t\t" . '$output = $next($request);';
+            $code[25] = "\t\t" . '$output = $next($request);';
             
-            array_splice( $code, 24 + 1, 0, "\t\t" . '' );
-            array_splice( $code, 24 + 2, 0, "\t\t" . 'try {' );
-            array_splice( $code, 24 + 3, 0, "\t\t\t" . 'if( ! is_null( $output->exception ) ) {' );
-            array_splice( $code, 24 + 4, 0, "\t\t\t\t" . 'throw new $output->exception;' );
-            array_splice( $code, 24 + 5, 0, "\t\t\t" . '}' );
-            array_splice( $code, 24 + 6, 0, "\t\t\t" . '' );
-            array_splice( $code, 24 + 7, 0, "\t\t\t" . 'return $output;' );
-            array_splice( $code, 24 + 8, 0, "\t\t" . '}' );
-            array_splice( $code, 24 + 9, 0, "\t\t" . 'catch( ValidationException $e ) {' );
-            array_splice( $code, 24 + 10, 0, "\t\t\t" . 'return response()->json(' );
-            array_splice( $code, 24 + 11, 0, "\t\t\t\t" . 'JUR::fail()' );
-            array_splice( $code, 24 + 12, 0, "\t\t\t\t" . '->code( self::VALIDATION_ERROR )' );
-            array_splice( $code, 24 + 13, 0, "\t\t\t\t" . '->message( $e->getMessage() )' );
-            array_splice( $code, 24 + 14, 0, "\t\t\t\t" . '->resolved()' );
-            array_splice( $code, 24 + 15, 0, "\t\t\t\t" . '->toArray(), 400' );
-            array_splice( $code, 24 + 16, 0, "\t\t\t" . ');' );
-            array_splice( $code, 24 + 17, 0, "\t\t" . '}' );
-            array_splice( $code, 24 + 18, 0, "\t\t" . 'catch( ModelNotFoundException $e ) {' );
-            array_splice( $code, 24 + 19, 0, "\t\t\t" . 'return response()->json(' );
-            array_splice( $code, 24 + 20, 0, "\t\t\t\t" . 'JUR::error()' );
-            array_splice( $code, 24 + 21, 0, "\t\t\t\t\t" . '->code( self::MODELNOTFOUND_ERROR )' );
-            array_splice( $code, 24 + 22, 0, "\t\t\t\t\t" . '->resolved()' );
-            array_splice( $code, 24 + 23, 0, "\t\t\t\t\t" . '->toArray(), 404' );
-            array_splice( $code, 24 + 24, 0, "\t\t\t" . ');' );
-            array_splice( $code, 24 + 25, 0, "\t\t" . '}' );
-            array_splice( $code, 24 + 26, 0, "\t\t" . 'catch( \Exception $e ) {' );
-            array_splice( $code, 24 + 27, 0, "\t\t\t" . 'return response()->json(' );
-            array_splice( $code, 24 + 28, 0, "\t\t\t\t" . 'JUR::error()' );
-            array_splice( $code, 24 + 29, 0, "\t\t\t\t\t" . '->code( self::UNKNOWN_ERROR )' );
-            array_splice( $code, 24 + 30, 0, "\t\t\t\t\t" . '->resolved()' );
-            array_splice( $code, 24 + 31, 0, "\t\t\t\t\t" . '->toArray(), 500' );
-            array_splice( $code, 24 + 32, 0, "\t\t\t" . ');' );
-            array_splice( $code, 24 + 33, 0, "\t\t" . '}' );
+            array_splice( $code, 25 + 1, 0, "\t\t" . '' );
+            array_splice( $code, 25 + 2, 0, "\t\t" . 'try {' );
+            array_splice( $code, 25 + 3, 0, "\t\t\t" . 'if( ! is_null( $output->exception ) ) {' );
+            array_splice( $code, 25 + 4, 0, "\t\t\t\t" . 'throw new $output->exception;' );
+            array_splice( $code, 25 + 5, 0, "\t\t\t" . '}' );
+            array_splice( $code, 25 + 6, 0, "\t\t\t" . '' );
+            array_splice( $code, 25 + 7, 0, "\t\t\t" . 'return $output;' );
+            array_splice( $code, 25 + 8, 0, "\t\t" . '}' );
+            array_splice( $code, 25 + 9, 0, "\t\t" . 'catch( ValidationException $e ) {' );
+            /**
+             * BEG : Log
+             */
+            array_splice( $code, 25 + 10, 0, "\t\t\t" . "Log::warning('API : ' . " . '$e->getMessage()' . ", [" );
+            array_splice( $code, 25 + 11, 0, "\t\t\t\t" . '"error" => [' );
+            array_splice( $code, 25 + 12, 0, "\t\t\t\t\t" . '"code" => $e->getCode(),' );
+            array_splice( $code, 25 + 13, 0, "\t\t\t\t\t" . '"line" => $e->getLine(),' );
+            array_splice( $code, 25 + 14, 0, "\t\t\t\t\t" . '"file" => $e->getFile(),' );
+            array_splice( $code, 25 + 15, 0, "\t\t\t\t\t" . '"trace" => $e->getTraceAsString(),' );
+            array_splice( $code, 25 + 16, 0, "\t\t\t\t" . '],' );
+            array_splice( $code, 25 + 17, 0, "\t\t\t\t" . '"request" => [' );
+            array_splice( $code, 25 + 18, 0, "\t\t\t\t\t" . '$request->server()' );
+            array_splice( $code, 25 + 19, 0, "\t\t\t\t" . ']' );
+            array_splice( $code, 25 + 20, 0, "\t\t\t" . "]);" );
+            array_splice( $code, 25 + 21, 0, "\t\t\t" . '' );
+            /**
+             * END : Log
+             */
+            array_splice( $code, 25 + 22, 0, "\t\t\t" . 'return response()->json(' );
+            array_splice( $code, 25 + 23, 0, "\t\t\t\t" . 'JUR::fail()' );
+            array_splice( $code, 25 + 24, 0, "\t\t\t\t" . '->code( self::VALIDATION_ERROR )' );
+            array_splice( $code, 25 + 25, 0, "\t\t\t\t" . '->message( $e->getMessage() )' );
+            array_splice( $code, 25 + 26, 0, "\t\t\t\t" . '->resolved()' );
+            array_splice( $code, 25 + 27, 0, "\t\t\t\t" . '->toArray(), 400' );
+            array_splice( $code, 25 + 28, 0, "\t\t\t" . ');' );
+            array_splice( $code, 25 + 29, 0, "\t\t" . '}' );
+            array_splice( $code, 25 + 30, 0, "\t\t" . 'catch( ModelNotFoundException $e ) {' );
+            /**
+             * BEG : Log
+             */
+            array_splice( $code, 25 + 31, 0, "\t\t\t" . "Log::error('API : ' . " . '$e->getMessage()' . ", [" );
+            array_splice( $code, 25 + 32, 0, "\t\t\t\t" . '"error" => [' );
+            array_splice( $code, 25 + 33, 0, "\t\t\t\t\t" . '"code" => $e->getCode(),' );
+            array_splice( $code, 25 + 34, 0, "\t\t\t\t\t" . '"line" => $e->getLine(),' );
+            array_splice( $code, 25 + 35, 0, "\t\t\t\t\t" . '"file" => $e->getFile(),' );
+            array_splice( $code, 25 + 36, 0, "\t\t\t\t\t" . '"trace" => $e->getTraceAsString(),' );
+            array_splice( $code, 25 + 37, 0, "\t\t\t\t" . '],' );
+            array_splice( $code, 25 + 38, 0, "\t\t\t\t" . '"request" => [' );
+            array_splice( $code, 25 + 39, 0, "\t\t\t\t\t" . '$request->server()' );
+            array_splice( $code, 25 + 40, 0, "\t\t\t\t" . ']' );
+            array_splice( $code, 25 + 41, 0, "\t\t\t" . "]);" );
+            array_splice( $code, 25 + 42, 0, "\t\t\t" . '' );
+            /**
+             * END : Log
+             */
+            array_splice( $code, 25 + 43, 0, "\t\t\t" . 'return response()->json(' );
+            array_splice( $code, 25 + 44, 0, "\t\t\t\t" . 'JUR::error()' );
+            array_splice( $code, 25 + 45, 0, "\t\t\t\t\t" . '->code( self::MODELNOTFOUND_ERROR )' );
+            array_splice( $code, 25 + 46, 0, "\t\t\t\t\t" . '->resolved()' );
+            array_splice( $code, 25 + 47, 0, "\t\t\t\t\t" . '->toArray(), 404' );
+            array_splice( $code, 25 + 48, 0, "\t\t\t" . ');' );
+            array_splice( $code, 25 + 49, 0, "\t\t" . '}' );
+            array_splice( $code, 25 + 50, 0, "\t\t" . 'catch( \Exception $e ) {' );
+            /**
+             * BEG : Log
+             */
+            array_splice( $code, 25 + 51, 0, "\t\t\t" . "Log::error('API : ' . " . '$e->getMessage()' . ", [" );
+            array_splice( $code, 25 + 52, 0, "\t\t\t\t" . '"error" => [' );
+            array_splice( $code, 25 + 53, 0, "\t\t\t\t\t" . '"code" => $e->getCode(),' );
+            array_splice( $code, 25 + 54, 0, "\t\t\t\t\t" . '"line" => $e->getLine(),' );
+            array_splice( $code, 25 + 55, 0, "\t\t\t\t\t" . '"file" => $e->getFile(),' );
+            array_splice( $code, 25 + 56, 0, "\t\t\t\t\t" . '"trace" => $e->getTraceAsString(),' );
+            array_splice( $code, 25 + 57, 0, "\t\t\t\t" . '],' );
+            array_splice( $code, 25 + 58, 0, "\t\t\t\t" . '"request" => [' );
+            array_splice( $code, 25 + 59, 0, "\t\t\t\t\t" . '$request->server()' );
+            array_splice( $code, 25 + 60, 0, "\t\t\t\t" . ']' );
+            array_splice( $code, 25 + 61, 0, "\t\t\t" . "]);" );
+            array_splice( $code, 25 + 62, 0, "\t\t\t" . '' );
+            /**
+             * END : Log
+             */
+            array_splice( $code, 25 + 63, 0, "\t\t\t" . 'return response()->json(' );
+            array_splice( $code, 25 + 64, 0, "\t\t\t\t" . 'JUR::error()' );
+            array_splice( $code, 25 + 65, 0, "\t\t\t\t\t" . '->code( self::UNKNOWN_ERROR )' );
+            array_splice( $code, 25 + 66, 0, "\t\t\t\t\t" . '->resolved()' );
+            array_splice( $code, 25 + 67, 0, "\t\t\t\t\t" . '->toArray(), 500' );
+            array_splice( $code, 25 + 68, 0, "\t\t\t" . ');' );
+            array_splice( $code, 25 + 69, 0, "\t\t" . '}' );
         }
         else {
-            $code[20] = "\t\t" . '$output = $next($request);';
+            $code[21] = "\t\t" . '$output = $next($request);';
 
-            array_splice( $code, 21 + 0, 0, "\t\t" . '' );
-            array_splice( $code, 21 + 1, 0, "\t\t" . 'try {' );
-            array_splice( $code, 21 + 2, 0, "\t\t\t" . 'if( ! is_null( $output->exception ) ) {' );
-            array_splice( $code, 21 + 3, 0, "\t\t\t\t" . 'throw new $output->exception;' );
-            array_splice( $code, 21 + 4, 0, "\t\t\t" . '}' );
-            array_splice( $code, 21 + 5, 0, "\t\t\t" . '' );
-            array_splice( $code, 21 + 6, 0, "\t\t\t" . 'return $output;' );
-            array_splice( $code, 21 + 7, 0, "\t\t" . '}' );
-            array_splice( $code, 21 + 8, 0, "\t\t" . 'catch( ValidationException $e ) {' );
-            array_splice( $code, 21 + 9, 0, "\t\t\t" . 'return response()->json( $e->getMessage(), 400 );' );
-            array_splice( $code, 21 + 10, 0, "\t\t" . '}' );
-            array_splice( $code, 21 + 11, 0, "\t\t" . 'catch( ModelNotFoundException $e ) {' );
-            array_splice( $code, 21 + 12, 0, "\t\t\t" . "return response()->json('the resource could not be found or has been removed', 404);" );
-            array_splice( $code, 21 + 13, 0, "\t\t" . '}' );
-            array_splice( $code, 21 + 14, 0, "\t\t" . 'catch( \Exception $e ) {' );
-            array_splice( $code, 21 + 15, 0, "\t\t\t" . "return response()->json('the request could not be processed', 500);" );
-            array_splice( $code, 21 + 16, 0, "\t\t" . '}' );
+            array_splice( $code, 22 + 0, 0, "\t\t" . '' );
+            array_splice( $code, 22 + 1, 0, "\t\t" . 'try {' );
+            array_splice( $code, 22 + 2, 0, "\t\t\t" . 'if( ! is_null( $output->exception ) ) {' );
+            array_splice( $code, 22 + 3, 0, "\t\t\t\t" . 'throw new $output->exception;' );
+            array_splice( $code, 22 + 4, 0, "\t\t\t" . '}' );
+            array_splice( $code, 22 + 5, 0, "\t\t\t" . '' );
+            array_splice( $code, 22 + 6, 0, "\t\t\t" . 'return $output;' );
+            array_splice( $code, 22 + 7, 0, "\t\t" . '}' );
+            array_splice( $code, 22 + 8, 0, "\t\t" . 'catch( ValidationException $e ) {' );
+            /**
+             * BEG : Log 
+             */
+            array_splice( $code, 25 + 51, 0, "\t\t\t" . "Log::warning('API : ' . " . '$e->getMessage()' . ", [" );
+            array_splice( $code, 25 + 52, 0, "\t\t\t\t" . '"error" => [' );
+            array_splice( $code, 25 + 53, 0, "\t\t\t\t\t" . '"code" => $e->getCode(),' );
+            array_splice( $code, 25 + 54, 0, "\t\t\t\t\t" . '"line" => $e->getLine(),' );
+            array_splice( $code, 25 + 55, 0, "\t\t\t\t\t" . '"file" => $e->getFile(),' );
+            array_splice( $code, 25 + 56, 0, "\t\t\t\t\t" . '"trace" => $e->getTraceAsString(),' );
+            array_splice( $code, 25 + 57, 0, "\t\t\t\t" . '],' );
+            array_splice( $code, 25 + 58, 0, "\t\t\t\t" . '"request" => [' );
+            array_splice( $code, 25 + 59, 0, "\t\t\t\t\t" . '$request->server()' );
+            array_splice( $code, 25 + 60, 0, "\t\t\t\t" . ']' );
+            array_splice( $code, 25 + 61, 0, "\t\t\t" . "]);" );
+            array_splice( $code, 25 + 62, 0, "\t\t\t" . '' );
+            /**
+             * END : Log
+             */
+            array_splice( $code, 22 + 9, 0, "\t\t\t" . 'return response()->json( $e->getMessage(), 400 );' );
+            array_splice( $code, 22 + 10, 0, "\t\t" . '}' );
+            array_splice( $code, 22 + 11, 0, "\t\t" . 'catch( ModelNotFoundException $e ) {' );
+            /**
+             * BEG : Log
+             */
+            array_splice( $code, 25 + 51, 0, "\t\t\t" . "Log::error('API : ' . " . '$e->getMessage()' . ", [" );
+            array_splice( $code, 25 + 52, 0, "\t\t\t\t" . '"error" => [' );
+            array_splice( $code, 25 + 53, 0, "\t\t\t\t\t" . '"code" => $e->getCode(),' );
+            array_splice( $code, 25 + 54, 0, "\t\t\t\t\t" . '"line" => $e->getLine(),' );
+            array_splice( $code, 25 + 55, 0, "\t\t\t\t\t" . '"file" => $e->getFile(),' );
+            array_splice( $code, 25 + 56, 0, "\t\t\t\t\t" . '"trace" => $e->getTraceAsString(),' );
+            array_splice( $code, 25 + 57, 0, "\t\t\t\t" . '],' );
+            array_splice( $code, 25 + 58, 0, "\t\t\t\t" . '"request" => [' );
+            array_splice( $code, 25 + 59, 0, "\t\t\t\t\t" . '$request->server()' );
+            array_splice( $code, 25 + 60, 0, "\t\t\t\t" . ']' );
+            array_splice( $code, 25 + 61, 0, "\t\t\t" . "]);" );
+            array_splice( $code, 25 + 62, 0, "\t\t\t" . '' );
+            /**
+             * END : Log
+             */
+            array_splice( $code, 22 + 12, 0, "\t\t\t" . "return response()->json('the resource could not be found or has been removed', 404);" );
+            array_splice( $code, 22 + 13, 0, "\t\t" . '}' );
+            array_splice( $code, 22 + 14, 0, "\t\t" . 'catch( \Exception $e ) {' );
+            /**
+             * BEG : Log
+             */
+            array_splice( $code, 25 + 51, 0, "\t\t\t" . "Log::error('API : ' . " . '$e->getMessage()' . ", [" );
+            array_splice( $code, 25 + 52, 0, "\t\t\t\t" . '"error" => [' );
+            array_splice( $code, 25 + 53, 0, "\t\t\t\t\t" . '"code" => $e->getCode(),' );
+            array_splice( $code, 25 + 54, 0, "\t\t\t\t\t" . '"line" => $e->getLine(),' );
+            array_splice( $code, 25 + 55, 0, "\t\t\t\t\t" . '"file" => $e->getFile(),' );
+            array_splice( $code, 25 + 56, 0, "\t\t\t\t\t" . '"trace" => $e->getTraceAsString(),' );
+            array_splice( $code, 25 + 57, 0, "\t\t\t\t" . '],' );
+            array_splice( $code, 25 + 58, 0, "\t\t\t\t" . '"request" => [' );
+            array_splice( $code, 25 + 59, 0, "\t\t\t\t\t" . '$request->server()' );
+            array_splice( $code, 25 + 60, 0, "\t\t\t\t" . ']' );
+            array_splice( $code, 25 + 61, 0, "\t\t\t" . "]);" );
+            array_splice( $code, 25 + 62, 0, "\t\t\t" . '' );
+            /**
+             * END : Log
+             */
+            array_splice( $code, 22 + 15, 0, "\t\t\t" . "return response()->json('the request could not be processed', 500);" );
+            array_splice( $code, 22 + 16, 0, "\t\t" . '}' );
         }        
 
         /**
