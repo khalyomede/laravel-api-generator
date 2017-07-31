@@ -49,6 +49,7 @@ This library has been made possible with the help of Services Providers. Laravel
 - Creates your relationships according to your tables foreign keys
 - Can specify which tables you want to fill with fake data
 - Can specify which tables you do not want to fill with fake data
+- Can control how many time your consumer can attack your api and in how many time he can attack again in case of limit reached
 
 ## Pre-requisites
 You need to have an existing [Laravel](https://laravel.com/) **5.3+** project to be able to use this library.
