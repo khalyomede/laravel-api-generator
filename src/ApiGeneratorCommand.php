@@ -744,7 +744,7 @@ class ApiGeneratorCommand extends Command
     }
 
     private function controllerName() {
-        return $this->modelName() . 'Controller';
+        return $this->modelName() . 'ApiController';
     }
 
     private function controllerPath() {
