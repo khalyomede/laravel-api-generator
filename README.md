@@ -31,6 +31,9 @@ http://localhost:8000/api/user
 ]
 ```
 
+## Progress
+Currently refactoring a huge part of the code and using dbal/doctrine to add the relationships. This will let this project jump right into pre-release so stay tuned!
+
 ## Create your own Laravel Services Providers
 This library has been made possible with the help of Services Providers. Laravel ships with an interesting bundle system to ensure every comunity package introduce themselves well to an existing Laravel project. I strongly encourage to check one of the best tutorials out there made [by our friends at DevDojo](https://devdojo.com/blog/tutorials/how-to-create-a-laravel-package) if you do not know how to get started and create your own laravel packages.
 
